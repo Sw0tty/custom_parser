@@ -94,4 +94,3 @@ while True:
                 print(rebuilder.excel_import())
             case _:
                 print(UNEXPECTED)
-    print(UNEXPECTED)
