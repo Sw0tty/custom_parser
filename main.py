@@ -41,7 +41,6 @@ while True:
                 CURRENT_MODULE = new_module
                 print(RESET_MODULE)
                 continue
-            print(UNEXPECTED)
         case 'reset':
             CURRENT_MODULE = 'None-module'
             print(RESET_MODULE)
@@ -95,3 +94,4 @@ while True:
                 print(rebuilder.excel_import())
             case _:
                 print(UNEXPECTED)
+    print(UNEXPECTED)

@@ -1,26 +1,21 @@
 """
 Rebuilder module
 """
-from modules.notice_module import ERROR, INFO
-from tkinter.filedialog import askopenfilename, askdirectory, askopenfile
-from classes.parent import MasterExcel
-
-import os.path
-from os import getcwd, chdir
-from os.path import basename
 import pyexcel
 import requests
-from classes.parser.site_parser import URL_TEMPLATE
 import pyexcel_xls  # For excel module!
 from pyexcel_io import writers  # For excel module!
 from time import sleep
-from colorama import init
 from copy import deepcopy
+from os import getcwd, chdir
+from os.path import basename
 from bs4 import BeautifulSoup as bS
-from classes.parent import MasterExcel
 from tkinter.filedialog import askopenfilename, askdirectory
-from modules.parser_params import TODAY, EXCEL_TEMPLATE, PARSER_DIVS_DICT, ZAK_44
-from modules.notice_module import ERROR, SUCCESS, INFO, CANCELLED, FILE_CREATED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, ERROR_FILE_EXTENSION
+
+from classes.parent import MasterExcel
+from classes.parser.site_parser import URL_TEMPLATE
+from modules.parser_params import TODAY, EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT
+from modules.notice_module import ERROR, SUCCESS, INFO, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED
 
 
 class Rebuilder(MasterExcel):
@@ -69,6 +64,11 @@ class Rebuilder(MasterExcel):
         if not self.__file_path:
             return self.get_file_name()
 
+        if self.IMPORT_DATA:
+            answer = input(f'[{INFO}] Inter Yes to reload data: ')
+            if answer != 'Yes':
+                return CANCELLED
+
         with open(self.__file_path, 'r') as open_file:
             open_file.readline()
 
@@ -82,19 +82,14 @@ class Rebuilder(MasterExcel):
 
                 if '223' in values_list[0]:
                     for i in range(0, 4):
-                        headers = {
-                            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
-                        }
-                        connection = requests.get(URL_TEMPLATE + replays_value, headers=headers)
+                        connection = requests.get(URL_TEMPLATE + replays_value, headers=PARSER_HEADERS)
                         sleep(2)
                         if connection.status_code == 200:
                             self.SEARCHING_INFO = bS(connection.text, "html.parser")
+                            self.parse_info()
 
-                            self.LIST_PARSE_OBJECTS = \
-                                self.SEARCHING_INFO.find_all('div',
-                                                             class_="search-registry-entry-block box-shadow-search-input")
                             for parse_obj in self.LIST_PARSE_OBJECTS:
-                                _ = parse_obj.find('div', class_='registry-entry__header-mid__number')
+                                _ = parse_obj.find('div', class_=PARSER_DIVS_DICT['org_href'][0])
                                 children = _.findChildren('a')
                                 children = children[0].get('href')
                                 replays_value = f'https://zakupki.gov.ru{children}'
@@ -103,10 +98,10 @@ class Rebuilder(MasterExcel):
                 else:
                     values_list.append(ZAK_44 + replays_value)
                 self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
+        return f'[{SUCCESS}] Data ready to export!'
 
     def parse_info(self):
-        self.LIST_PARSE_OBJECTS = \
-            self.SEARCHING_INFO.find_all('div', class_="search-registry-entry-block box-shadow-search-input")
+        self.LIST_PARSE_OBJECTS = self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
 
     def excel_import(self):
         if not self.SEARCHING_INFO:

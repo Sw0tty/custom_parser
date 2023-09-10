@@ -2,7 +2,7 @@
 MasterExcel notices
 """
 from colorama import Fore, Style
-from modules.help_module import CURRENT_MODULE
+from modules.help_module import CURRENT_MODULE, MODULES
 
 
 ERROR = Style.BRIGHT + Fore.RED + "ERROR" + Style.RESET_ALL
@@ -21,6 +21,6 @@ RESET_MODULE = f'[{SUCCESS}] Module reset!'
 
 
 def module_styler(module):
-    # if CURRENT_MODULE == 'None-module':
+    # if CURRENT_MODULE not in MODULES:
     #     return Fore.RED + module + Style.RESET_ALL
     return Fore.MAGENTA + module + Style.RESET_ALL
