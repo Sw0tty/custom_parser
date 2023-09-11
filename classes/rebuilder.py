@@ -24,6 +24,7 @@ class Rebuilder(MasterExcel):
     IMPORT_DATA = deepcopy(_EXCEL_TEMPLATE)
     SEARCHING_INFO = None
     LIST_PARSE_OBJECTS = None
+    READY_TO_EXPORT = False
 
     def __init__(self, commands: dict):
         super().__init__(commands)
@@ -86,7 +87,7 @@ class Rebuilder(MasterExcel):
                         sleep(2)
                         if connection.status_code == 200:
                             self.SEARCHING_INFO = bS(connection.text, "html.parser")
-                            self.parse_info()
+                            self.LIST_PARSE_OBJECTS = self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
 
                             for parse_obj in self.LIST_PARSE_OBJECTS:
                                 _ = parse_obj.find('div', class_=PARSER_DIVS_DICT['org_href'][0])
@@ -98,13 +99,14 @@ class Rebuilder(MasterExcel):
                 else:
                     values_list.append(ZAK_44 + replays_value)
                 self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
+        self.file_ready()
         return f'[{SUCCESS}] Data ready to export!'
 
-    def parse_info(self):
-        self.LIST_PARSE_OBJECTS = self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
+    def file_ready(self):
+        self.READY_TO_EXPORT = True
 
     def excel_import(self):
-        if not self.SEARCHING_INFO:
+        if not self.READY_TO_EXPORT:
             return self.get_file_path()
 
         path_dir = askdirectory(initialdir=getcwd(), title="Save in...")

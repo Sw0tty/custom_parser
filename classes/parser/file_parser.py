@@ -103,8 +103,7 @@ class FileParser(MasterExcel):
                         values_list.append('')
                         values_list.append('')
                         children = _.findChildren('a')
-                        children = children[0].get('href')
-                        _ = f'https://zakupki.gov.ru{children}'
+                        _ = children[0].get('href')
 
                 values_list.append(_)
 
