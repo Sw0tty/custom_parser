@@ -4,8 +4,8 @@ Main File MasterExcel
 from classes.mas_parser import Parser
 from classes.parser.file_parser import FileParser
 from classes.rebuilder import Rebuilder
-from modules.parser_params import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, ZAK_44
-from modules.notice_module import module_styler, HELP, UNEXPECTED, RESET_MODULE
+from modules.parser_params import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, ZAK_44, module_styler
+from modules.notice_module import HELP, UNEXPECTED, RESET_MODULE
 from modules.help_module import CURRENT_MODULE, COMMANDS_DICT, MODULES, PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
 
 

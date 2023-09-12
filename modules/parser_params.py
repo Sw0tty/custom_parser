@@ -1,4 +1,5 @@
 from datetime import date
+from colorama import Fore, Style
 
 
 TODAY = date.today().strftime('%d.%m.%Y')
@@ -30,3 +31,29 @@ PARSER_DIVS_DICT = {
 }
 
 ZAK_44 = 'https://zakupki.gov.ru/epz/order/notice/ea20/view/common-info.html?regNumber='
+
+
+def module_styler(module):
+    # if CURRENT_MODULE not in MODULES:
+    #     return Fore.RED + module + Style.RESET_ALL
+    return Fore.MAGENTA + module + Style.RESET_ALL
+
+
+def price_styler(price):
+    try:
+        float(price)
+        count_ = 0
+        new_price = ''
+        for i in price[-4::-1]:
+            new_price += i
+            count_ += 1
+            if count_ % 3 == 0 and count_ != len(price) - 3:
+                new_price += ' '
+        new_price = (new_price[::-1] + price[-3::]).replace('.', ',')
+        return new_price
+    except ValueError:
+        return price
+
+
+if __name__ == '__main__':
+    print(price_styler('123456.78'))

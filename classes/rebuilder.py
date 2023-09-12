@@ -14,7 +14,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 
 from classes.parent import MasterExcel
 from classes.parser.site_parser import URL_TEMPLATE
-from modules.parser_params import TODAY, EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT
+from modules.parser_params import TODAY, EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler
 from modules.notice_module import ERROR, SUCCESS, INFO, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED
 
 
@@ -78,6 +78,7 @@ class Rebuilder(MasterExcel):
                 if len(values_list) <= 1:
                     break
                 replays_value = values_list.pop(1)[1:]
+                # values_list[2] = price_styler(values_list[2])
                 values_list.append('')
                 values_list.append('')
 

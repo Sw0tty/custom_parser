@@ -18,9 +18,3 @@ FILE_PATH = f'[{INFO}] Path to file: '
 FILE_NAME = f'[{INFO}] Name of selected file: '
 ERROR_FILE_EXTENSION = f'[{ERROR}] File must have html extension!'
 RESET_MODULE = f'[{SUCCESS}] Module reset!'
-
-
-def module_styler(module):
-    # if CURRENT_MODULE not in MODULES:
-    #     return Fore.RED + module + Style.RESET_ALL
-    return Fore.MAGENTA + module + Style.RESET_ALL
