@@ -49,7 +49,7 @@ def price_styler(price):
             count_ += 1
             if count_ % 3 == 0 and count_ != len(price) - 3:
                 new_price += ' '
-        new_price = (new_price[::-1] + price[-3::]).replace('.', ',')
+        new_price = new_price[::-1] + price[-3::]
         return new_price
     except ValueError:
         return price
