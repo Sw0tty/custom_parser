@@ -1,5 +1,6 @@
 """
-Rebuilder module
+Working with excel file for rebuild raw site information
+Support (*.csv) format
 """
 import pyexcel
 import requests
@@ -49,7 +50,7 @@ class Rebuilder(MasterExcel):
                                    )
 
         if filepath:
-            if 'csv' in filepath:
+            if filepath.endswith('.csv'):
                 self.__file_path = filepath
                 self.__file_name = basename(self.__file_path)
                 return self.get_file_path()

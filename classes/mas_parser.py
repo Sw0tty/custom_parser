@@ -1,8 +1,8 @@
 """
-Parser module
-This module can parse:
- - Site: https://zakupki.gov.ru/
- - HTML files
+!!!-NOW NOT WORKING-!!!
+Parser module with MasterParser class
+Have methods to parse the site and site for other parsers
+!!!-NOW NOT WORKING-!!!
 """
 import os
 import pyexcel
@@ -43,6 +43,12 @@ TEST2 = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?search-fil
 
 # print(TEST)
 URL_PARSE = TEST
+
+
+class MasterParser:
+
+    def parse(self):
+        pass
 
 
 class ConnectionFailed(Exception):

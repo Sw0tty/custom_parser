@@ -6,16 +6,17 @@ from modules.parser.file_parser import FileParser
 from modules.parser.site_parser import SiteParser
 from modules.rebuilder import Rebuilder
 from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, ZAK_44, module_styler
-from app_config.app_notices import HELP, UNEXPECTED, RESET_MODULE
-from app_config.help_commands import CURRENT_MODULE, COMMANDS_DICT, MODULES, PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
-
+from app_config.app_notices import UNEXPECTED, RESET_MODULE, INFO
+from app_config.help_commands import CURRENT_MODULE, MAIN_COMMANDS_DICT, MODULES, PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
+from classes.parent import MasterExcel
 
 parser = Parser(PARSER_COMMANDS_DICT)
 file_parser = FileParser(FILE_PARSER_COMMANDS_DICT)
 site_parser = SiteParser(SITE_PARSER_COMMANDS_DICT)
 rebuilder = Rebuilder(REBUILDER_COMMANDS_DICT)
+master_excel = MasterExcel(MAIN_COMMANDS_DICT)
 
-print(HELP)
+print(f"[{INFO}] Print 'help' for call list commands.")
 
 
 def reset_module():
@@ -31,8 +32,7 @@ while True:
 
     match input_command:
         case 'help':
-            for key in COMMANDS_DICT.keys():
-                print(f'\t{key} - {COMMANDS_DICT[key]}')
+            master_excel.help()
             continue
         case 'set':
             new_module = reset_module()

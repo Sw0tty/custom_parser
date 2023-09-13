@@ -8,9 +8,10 @@ from app_config.help_commands import CURRENT_MODULE, MODULES
 ERROR = Style.BRIGHT + Fore.RED + "ERROR" + Style.RESET_ALL
 SUCCESS = Style.BRIGHT + Fore.GREEN + "SUCCESS" + Style.RESET_ALL
 INFO = Style.BRIGHT + Fore.LIGHTCYAN_EX + "INFO" + Style.RESET_ALL
+WARNING = Style.BRIGHT + Fore.YELLOW + "WARNING" + Style.RESET_ALL
 
-HELP = f"[{INFO}] Print 'help' for call list commands."
-CANCELLED = f'[{INFO}] Cancelled'
+
+CANCELLED = f'[{WARNING}] Function cancelled!'
 FILE_CREATED = f'[{SUCCESS}] File created!'
 UNEXPECTED = f'[{ERROR}] Unexpected command!'
 FILE_UNDEFINED = f'[{ERROR}] File undefined!'

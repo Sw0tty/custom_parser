@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup as bS
 from classes.parent import MasterExcel
 from tkinter.filedialog import askopenfilename, askdirectory
 from app_config.settings import TODAY, EXCEL_TEMPLATE, price_styler
-from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED
+from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, INFO
 
 init()
 
@@ -33,6 +33,7 @@ class FileParser(MasterExcel):
         super().__init__(commands)
         self.__file_path = None
         self.__file_name = None
+        self.__ready_to_import = False
 
     def get_file_name(self):
         if self.__file_path:
@@ -51,7 +52,7 @@ class FileParser(MasterExcel):
                                    )
 
         if filepath:
-            if 'html' in filepath:
+            if filepath.endswith('.html'):
                 self.__file_path = filepath
                 self.__file_name = basename(self.__file_path)
                 return self.get_file_path()
@@ -71,6 +72,11 @@ class FileParser(MasterExcel):
     def parse_info(self):
         self.LIST_PARSE_OBJECTS = \
             self.SEARCHING_INFO.find_all('div', class_="search-registry-entry-block box-shadow-search-input")
+
+    def file_ready(self):
+        if self.__ready_to_import:
+            return f'[{INFO}] Data ready to import.'
+        return f'[{ERROR}] Data undefined!'
 
     def excel_import(self, div_dict):
         if not self.SEARCHING_INFO:

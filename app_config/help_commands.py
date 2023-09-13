@@ -11,7 +11,7 @@ MODULES = {
     'site-parser': 'parse the site',
 }
 
-COMMANDS_DICT = {
+MAIN_COMMANDS_DICT = {
     'set': 'set module',
     'reset': 'reset current module',
     'exit': 'close master',
