@@ -13,8 +13,8 @@ from copy import deepcopy
 from bs4 import BeautifulSoup as bS
 from classes.parent import MasterExcel
 from tkinter.filedialog import askopenfilename, askdirectory
-from modules.parser_params import TODAY, EXCEL_TEMPLATE
-from modules.notice_module import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED
+from app_config.settings import TODAY, EXCEL_TEMPLATE, price_styler
+from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED
 
 init()
 

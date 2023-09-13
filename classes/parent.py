@@ -4,7 +4,7 @@ File with MasterExcel class
 from os import getcwd
 from os.path import basename
 from tkinter.filedialog import askopenfilename
-from modules.notice_module import FILE_UNDEFINED, FILE_PATH, FILE_NAME, CANCELLED, ERROR_FILE_EXTENSION, INFO, ERROR
+from app_config.app_notices import FILE_UNDEFINED, FILE_PATH, FILE_NAME, CANCELLED, ERROR_FILE_EXTENSION, INFO, ERROR
 
 
 class MasterExcel:

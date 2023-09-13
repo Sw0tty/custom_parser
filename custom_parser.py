@@ -13,7 +13,7 @@ from colorama import init
 from copy import deepcopy
 from bs4 import BeautifulSoup as bS
 from tkinter.filedialog import askopenfilename, askdirectory
-from modules.parser_params import TODAY, ERROR, SUCCESS, INFO, EXCEL_TEMPLATE
+from app_config.settings import TODAY, ERROR, SUCCESS, INFO, EXCEL_TEMPLATE
 
 
 init()

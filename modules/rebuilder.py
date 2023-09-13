@@ -13,9 +13,9 @@ from bs4 import BeautifulSoup as bS
 from tkinter.filedialog import askopenfilename, askdirectory
 
 from classes.parent import MasterExcel
-from classes.parser.site_parser import URL_TEMPLATE
-from modules.parser_params import TODAY, EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler
-from modules.notice_module import ERROR, SUCCESS, INFO, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED
+from modules.parser.site_parser import URL_TEMPLATE
+from app_config.settings import TODAY, EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler
+from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED
 
 
 class Rebuilder(MasterExcel):
@@ -30,7 +30,7 @@ class Rebuilder(MasterExcel):
         super().__init__(commands)
         self.__file_path = None
         self.__file_name = None
-        self.__rebuild = None
+        self.__rebuild = False
 
     def get_file_name(self):
         if self.__file_path:
@@ -65,7 +65,7 @@ class Rebuilder(MasterExcel):
         if not self.__file_path:
             return self.get_file_name()
 
-        if self.IMPORT_DATA:
+        if self.__rebuild:
             answer = input(f'[{INFO}] Inter Yes to reload data: ')
             if answer != 'Yes':
                 return CANCELLED
@@ -78,9 +78,9 @@ class Rebuilder(MasterExcel):
                 if len(values_list) <= 1:
                     break
                 replays_value = values_list.pop(1)[1:]
-                # values_list[2] = price_styler(values_list[2])
+                values_list[2] = price_styler(values_list[2])
                 values_list.append('')
-                values_list.append('')
+                values_list.append(3)
 
                 if '223' in values_list[0]:
                     for i in range(0, 4):
@@ -105,6 +105,7 @@ class Rebuilder(MasterExcel):
 
     def file_ready(self):
         self.READY_TO_EXPORT = True
+        self.__rebuild = True
 
     def excel_import(self):
         if not self.READY_TO_EXPORT:

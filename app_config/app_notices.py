@@ -2,7 +2,7 @@
 MasterExcel notices
 """
 from colorama import Fore, Style
-from modules.help_module import CURRENT_MODULE, MODULES
+from app_config.help_commands import CURRENT_MODULE, MODULES
 
 
 ERROR = Style.BRIGHT + Fore.RED + "ERROR" + Style.RESET_ALL

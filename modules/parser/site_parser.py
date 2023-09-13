@@ -4,10 +4,15 @@
 import requests
 from bs4 import BeautifulSoup as bS
 from time import sleep
+from classes.parent import MasterExcel
+
 
 URL_TEMPLATE = f'''https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString='''
 
 try_count = 0
+
+class SiteParser(MasterExcel):
+    pass
 
 # while True:
 #     if try_count:

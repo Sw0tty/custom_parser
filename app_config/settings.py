@@ -7,6 +7,10 @@ TODAY = date.today().strftime('%d.%m.%Y')
 NAME = 'MasterExcel'
 MASTER_CMD_INPUT = r'\>'
 
+PARSER_HEADERS = {
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
+}
+
 EXCEL_TEMPLATE = {
     f'Выгрузка {TODAY}': [
         ['Закупки по', 'Наименование закупки', 'Начальная (максимальная) цена контракта',
@@ -15,12 +19,10 @@ EXCEL_TEMPLATE = {
     ]
 }
 
+# Main site block with parsing info
 MAIN_PARSER_BLOCK = "search-registry-entry-block box-shadow-search-input"
 
-PARSER_HEADERS = {
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
-}
-
+# Classes in main parsing block
 PARSER_DIVS_DICT = {
     'purchases': ('col-9 p-0 registry-entry__header-top__title text-truncate', 'Закупки по: '),
     'name': ('registry-entry__body-value', 'Наименование закупки: '),
@@ -33,12 +35,14 @@ PARSER_DIVS_DICT = {
 ZAK_44 = 'https://zakupki.gov.ru/epz/order/notice/ea20/view/common-info.html?regNumber='
 
 
+# Style the current selected module
 def module_styler(module):
     # if CURRENT_MODULE not in MODULES:
     #     return Fore.RED + module + Style.RESET_ALL
     return Fore.MAGENTA + module + Style.RESET_ALL
 
 
+# Style the price value
 def price_styler(price):
     try:
         float(price)

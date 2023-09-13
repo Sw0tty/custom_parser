@@ -2,16 +2,17 @@
 Main File MasterExcel
 """
 from classes.mas_parser import Parser
-from classes.parser.file_parser import FileParser
-from classes.rebuilder import Rebuilder
-from modules.parser_params import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, ZAK_44, module_styler
-from modules.notice_module import HELP, UNEXPECTED, RESET_MODULE
-from modules.help_module import CURRENT_MODULE, COMMANDS_DICT, MODULES, PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
+from modules.parser.file_parser import FileParser
+from modules.parser.site_parser import SiteParser
+from modules.rebuilder import Rebuilder
+from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, ZAK_44, module_styler
+from app_config.app_notices import HELP, UNEXPECTED, RESET_MODULE
+from app_config.help_commands import CURRENT_MODULE, COMMANDS_DICT, MODULES, PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
 
 
 parser = Parser(PARSER_COMMANDS_DICT)
 file_parser = FileParser(FILE_PARSER_COMMANDS_DICT)
-# site_parser = SiteParser(SITE_PARSER_COMMANDS_DICT)
+site_parser = SiteParser(SITE_PARSER_COMMANDS_DICT)
 rebuilder = Rebuilder(REBUILDER_COMMANDS_DICT)
 
 print(HELP)
@@ -67,13 +68,13 @@ while True:
     elif CURRENT_MODULE == 'site-parser':
         match input_command:
             case '1':
-                rebuilder.help()
-            case '2':
-                print(rebuilder.set_file_path())
-            case '3':
-                print(rebuilder.get_file_path())
-            case '4':
-                print(rebuilder.get_file_name())
+                site_parser.help()
+            # case '2':
+            #     print(site_parser.set_file_path())
+            # case '3':
+            #     print(site_parser.get_file_path())
+            # case '4':
+            #     print(site_parser.get_file_name())
             case _:
                 print(UNEXPECTED)
     elif CURRENT_MODULE == 'rebuilder':
