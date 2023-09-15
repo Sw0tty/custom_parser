@@ -70,6 +70,7 @@ class Rebuilder(MasterExcel):
             answer = input(f'[{INFO}] Inter Yes to reload data: ')
             if answer != 'Yes':
                 return CANCELLED
+            self.IMPORT_DATA = deepcopy(self._EXCEL_TEMPLATE)
 
         with open(self.__file_path, 'r') as open_file:
             open_file.readline()

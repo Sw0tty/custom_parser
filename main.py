@@ -60,9 +60,9 @@ while True:
             case '4':
                 print(file_parser.get_file_name())
             case '5':
-                print(file_parser.parse_file())
+                print(file_parser.parse_file(PARSER_DIVS_DICT))
             case '6':
-                print(file_parser.excel_import(PARSER_DIVS_DICT))
+                print(file_parser.excel_import())
             case _:
                 print(UNEXPECTED)
     elif CURRENT_MODULE == 'site-parser':

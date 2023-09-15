@@ -1,7 +1,6 @@
 """
 
 """
-import os.path
 from os import getcwd, chdir
 from os.path import basename
 import pyexcel
@@ -59,28 +58,17 @@ class FileParser(MasterExcel):
             return f'[{ERROR}] File must have html extension!'
         return CANCELLED
 
-    def parse_file(self):
+    def parse_file(self, div_dict):
 
         if not self.__file_path:
             return self.get_file_name()
 
         with open(self.__file_path, 'r', encoding='utf-8') as open_file:
             self.SEARCHING_INFO = bS(open_file.read(), 'lxml')
+        
         self.parse_info()
-        return f'[{SUCCESS}] File ready to export'
 
-    def parse_info(self):
-        self.LIST_PARSE_OBJECTS = \
-            self.SEARCHING_INFO.find_all('div', class_="search-registry-entry-block box-shadow-search-input")
-
-    def file_ready(self):
-        if self.__ready_to_import:
-            return f'[{INFO}] Data ready to import.'
-        return f'[{ERROR}] Data undefined!'
-
-    def excel_import(self, div_dict):
-        if not self.SEARCHING_INFO:
-            return self.get_file_path()
+        # ----
 
         values_list = []
 
@@ -107,13 +95,65 @@ class FileParser(MasterExcel):
 
                     if class_key == 'org_href':
                         values_list.append('')
-                        values_list.append('')
+                        values_list.append(3)
                         children = _.findChildren('a')
                         _ = children[0].get('href')
 
                 values_list.append(_)
 
             self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
+
+        # ----
+
+        self.__ready_to_import = True
+        
+        return f'[{SUCCESS}] File ready to export'
+
+    def parse_info(self):
+        self.LIST_PARSE_OBJECTS = \
+            self.SEARCHING_INFO.find_all('div', class_="search-registry-entry-block box-shadow-search-input")
+
+    def file_ready(self):
+        if self.__ready_to_import:
+            return f'[{INFO}] Data ready to import.'
+        return f'[{ERROR}] Data undefined!'
+
+    def excel_import(self):
+        if not self.SEARCHING_INFO:
+            return self.get_file_path()
+
+        # values_list = []
+
+        # for parse_obj in self.LIST_PARSE_OBJECTS:
+        #     values_list.clear()
+        #     for class_key in div_dict.keys():
+        #         _ = parse_obj.find('div', class_=div_dict[class_key][0])
+        #         if _ is None:
+        #             _ = '--None value--'
+        #         else:
+        #             if class_key != 'org_href' and class_key != 'end_date':
+        #                 _ = _.text.strip()
+        #                 _ = _[:-1].rstrip() if class_key == 'price' else _
+
+        #             if class_key == 'purchases':
+        #                 _ = _[0:6] if _[0] == '4' else _[0:7]
+
+        #             if class_key == 'end_date':
+        #                 _ = _.findChildren('div', class_='data-block__value', recursive=False)
+        #                 if _:
+        #                     _ = _[0].text.strip()
+        #                 else:
+        #                     _ = '--None date--'
+
+        #             if class_key == 'org_href':
+        #                 values_list.append('')
+        #                 values_list.append('')
+        #                 children = _.findChildren('a')
+        #                 _ = children[0].get('href')
+
+        #         values_list.append(_)
+
+        #     self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
 
         path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
         if path_dir:
