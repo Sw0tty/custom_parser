@@ -16,7 +16,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 from classes.parent import MasterExcel
 from modules.parser.site_parser import URL_TEMPLATE
 from app_config.settings import TODAY, EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler
-from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED
+from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, APPLY_STRING
 
 
 class Rebuilder(MasterExcel):
@@ -25,25 +25,32 @@ class Rebuilder(MasterExcel):
     IMPORT_DATA = deepcopy(_EXCEL_TEMPLATE)
     SEARCHING_INFO = None
     LIST_PARSE_OBJECTS = None
-    READY_TO_EXPORT = False
 
     def __init__(self, commands: dict):
         super().__init__(commands)
         self.__file_path = None
         self.__file_name = None
-        self.__rebuild = False
+        self.__already_rebuild = False
 
     def get_file_name(self):
         if self.__file_path:
             return FILE_NAME + self.__file_name
         return FILE_UNDEFINED
 
-    def get_file_path(self):
+    def get_selected_file_path(self, reset=False):
+        if reset:
+            return f'[{SUCCESS}] Path to new selected file: {self.__file_path}'
+
         if self.__file_path:
             return FILE_PATH + self.__file_path
         return FILE_UNDEFINED
 
-    def set_file_path(self):
+    def set_selected_file(self):
+        if self.__file_path:
+            answer = input(APPLY_STRING)
+            if answer != 'Yes':
+                return CANCELLED
+
         filepath = askopenfilename(initialdir=getcwd(),
                                    title="Open file",
                                    filetypes=(('csv file', '*.csv'), ('all files', '*'))
@@ -53,21 +60,23 @@ class Rebuilder(MasterExcel):
             if filepath.endswith('.csv'):
                 self.__file_path = filepath
                 self.__file_name = basename(self.__file_path)
-                return self.get_file_path()
+                self.__already_rebuild = False
+                return self.get_selected_file_path(True)
             return f'[{ERROR}] File must have csv extension!'
         return CANCELLED
 
-    def check_rebuild(self):
-        if self.__rebuild:
-            return f'[{INFO}] File ready to export!'
+    def get_rebuild_status(self, rebuilding=False):
+        if self.__already_rebuild:
+            status = SUCCESS if rebuilding else INFO
+            return f'[{status}] Data ready to export!'
         return f'[{ERROR}] Nothing to export!'
 
     def prepare_rebuild(self):
         if not self.__file_path:
             return self.get_file_name()
 
-        if self.__rebuild:
-            answer = input(f'[{INFO}] Inter Yes to reload data: ')
+        if self.__already_rebuild:
+            answer = input(APPLY_STRING)
             if answer != 'Yes':
                 return CANCELLED
             self.IMPORT_DATA = deepcopy(self._EXCEL_TEMPLATE)
@@ -77,6 +86,7 @@ class Rebuilder(MasterExcel):
 
             while True:
                 values_list = open_file.readline().strip().split(';')
+
                 if len(values_list) <= 1:
                     break
                 replays_value = values_list.pop(1)[1:]
@@ -88,6 +98,7 @@ class Rebuilder(MasterExcel):
                     for i in range(0, 4):
                         connection = requests.get(URL_TEMPLATE + replays_value, headers=PARSER_HEADERS)
                         sleep(2)
+
                         if connection.status_code == 200:
                             self.SEARCHING_INFO = bS(connection.text, "html.parser")
                             self.LIST_PARSE_OBJECTS = self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
@@ -102,18 +113,20 @@ class Rebuilder(MasterExcel):
                 else:
                     values_list.append(ZAK_44 + replays_value)
                 self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
-        self.file_ready()
-        return f'[{SUCCESS}] Data ready to export!'
 
-    def file_ready(self):
-        self.READY_TO_EXPORT = True
-        self.__rebuild = True
+        self.__already_rebuild = True
+
+        return self.get_rebuild_status(True)
 
     def excel_import(self):
-        if not self.READY_TO_EXPORT:
-            return self.get_file_path()
+        if not self.__file_path:
+            return self.get_selected_file_path()
+
+        if not self.__already_rebuild:
+            return self.get_rebuild_status()
 
         path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
+
         if path_dir:
             chdir(path_dir)
             # if os.path.exists(f"Выгрузка {TODAY}.xls"):

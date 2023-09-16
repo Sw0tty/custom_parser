@@ -12,7 +12,7 @@ from copy import deepcopy
 from bs4 import BeautifulSoup as bS
 from classes.parent import MasterExcel
 from tkinter.filedialog import askopenfilename, askdirectory
-from app_config.settings import TODAY, EXCEL_TEMPLATE, price_styler
+from app_config.settings import TODAY, EXCEL_TEMPLATE, price_styler, MAIN_PARSER_BLOCK
 from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, INFO
 
 init()
@@ -111,7 +111,7 @@ class FileParser(MasterExcel):
 
     def parse_info(self):
         self.LIST_PARSE_OBJECTS = \
-            self.SEARCHING_INFO.find_all('div', class_="search-registry-entry-block box-shadow-search-input")
+            self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
 
     def file_ready(self):
         if self.__ready_to_import:

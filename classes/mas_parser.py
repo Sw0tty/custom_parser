@@ -50,6 +50,9 @@ class MasterParser:
     def parse(self):
         pass
 
+    # def excel_import(self):
+    #     pass
+
 
 class ConnectionFailed(Exception):
     pass

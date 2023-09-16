@@ -5,9 +5,10 @@ from classes.mas_parser import Parser
 from modules.parser.file_parser import FileParser
 from modules.parser.site_parser import SiteParser
 from modules.rebuilder import Rebuilder
-from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, ZAK_44, module_styler
+from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, module_styler
 from app_config.app_notices import UNEXPECTED, RESET_MODULE, INFO
-from app_config.help_commands import CURRENT_MODULE, MAIN_COMMANDS_DICT, MODULES, PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
+from app_config.help_commands import CURRENT_MODULE, MAIN_COMMANDS_DICT, MODULES,\
+    PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
 from classes.parent import MasterExcel
 
 parser = Parser(PARSER_COMMANDS_DICT)
@@ -33,7 +34,6 @@ while True:
     match input_command:
         case 'help':
             master_excel.help()
-            continue
         case 'set':
             new_module = reset_module()
             if new_module and new_module in MODULES:
@@ -63,8 +63,7 @@ while True:
                 print(file_parser.parse_file(PARSER_DIVS_DICT))
             case '6':
                 print(file_parser.excel_import())
-            case _:
-                print(UNEXPECTED)
+
     elif CURRENT_MODULE == 'site-parser':
         match input_command:
             case '1':
@@ -75,23 +74,20 @@ while True:
             #     print(site_parser.get_file_path())
             # case '4':
             #     print(site_parser.get_file_name())
-            case _:
-                print(UNEXPECTED)
+
     elif CURRENT_MODULE == 'rebuilder':
         match input_command:
             case '1':
                 rebuilder.help()
             case '2':
-                print(rebuilder.set_file_path())
+                print(rebuilder.set_selected_file())
             case '3':
-                print(rebuilder.get_file_path())
+                print(rebuilder.get_selected_file_path())
             case '4':
                 print(rebuilder.get_file_name())
             case '5':
-                print(rebuilder.check_rebuild())
+                print(rebuilder.get_rebuild_status())
             case '6':
-                print(rebuilder.prepare_rebuild())
+                print(rebuilder.prepare_rebuild)
             case '7':
                 print(rebuilder.excel_import())
-            case _:
-                print(UNEXPECTED)
