@@ -1,5 +1,7 @@
 """
-
+!!!-NOW ON REFACTORING-!!!
+Parse the HTML files.
+!!!-NOW ON REFACTORING-!!!
 """
 from os import getcwd, chdir
 from os.path import basename
@@ -12,7 +14,7 @@ from copy import deepcopy
 from bs4 import BeautifulSoup as bS
 from classes.parent import MasterExcel
 from tkinter.filedialog import askopenfilename, askdirectory
-from app_config.settings import TODAY, EXCEL_TEMPLATE, price_styler, MAIN_PARSER_BLOCK
+from app_config.settings import EXCEL_TEMPLATE, price_styler, MAIN_PARSER_BLOCK
 from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, INFO
 
 init()
@@ -28,8 +30,8 @@ class FileParser(MasterExcel):
 
     IMPORT_DATA = deepcopy(_EXCEL_TEMPLATE)
 
-    def __init__(self, commands: dict):
-        super().__init__(commands)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.__file_path = None
         self.__file_name = None
         self.__ready_to_import = False
@@ -118,48 +120,8 @@ class FileParser(MasterExcel):
             return f'[{INFO}] Data ready to import.'
         return f'[{ERROR}] Data undefined!'
 
-    def excel_import(self):
+    def excel_export(self):
         if not self.SEARCHING_INFO:
             return self.get_file_path()
 
-        # values_list = []
-
-        # for parse_obj in self.LIST_PARSE_OBJECTS:
-        #     values_list.clear()
-        #     for class_key in div_dict.keys():
-        #         _ = parse_obj.find('div', class_=div_dict[class_key][0])
-        #         if _ is None:
-        #             _ = '--None value--'
-        #         else:
-        #             if class_key != 'org_href' and class_key != 'end_date':
-        #                 _ = _.text.strip()
-        #                 _ = _[:-1].rstrip() if class_key == 'price' else _
-
-        #             if class_key == 'purchases':
-        #                 _ = _[0:6] if _[0] == '4' else _[0:7]
-
-        #             if class_key == 'end_date':
-        #                 _ = _.findChildren('div', class_='data-block__value', recursive=False)
-        #                 if _:
-        #                     _ = _[0].text.strip()
-        #                 else:
-        #                     _ = '--None date--'
-
-        #             if class_key == 'org_href':
-        #                 values_list.append('')
-        #                 values_list.append('')
-        #                 children = _.findChildren('a')
-        #                 _ = children[0].get('href')
-
-        #         values_list.append(_)
-
-        #     self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
-
-        path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
-        if path_dir:
-            chdir(path_dir)
-            # if os.path.exists(f"Выгрузка {TODAY}.xls"):
-            #     pyexcel.save_book_as(bookdict=self.IMPORT_DATA, dest_file_name=f"Выгрузка {TODAY}.xls")
-            pyexcel.save_book_as(bookdict=self.IMPORT_DATA, dest_file_name=f"Выгрузка {TODAY}.xls")
-            return f'[{SUCCESS}] File created!'
-        return CANCELLED
+        return self._save_file(self.IMPORT_DATA)

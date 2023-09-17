@@ -2,13 +2,13 @@
 MasterExcel notices
 """
 from colorama import Fore, Style
-from app_config.help_commands import CURRENT_MODULE, MODULES
 
 
 ERROR = Style.BRIGHT + Fore.RED + "ERROR" + Style.RESET_ALL
 SUCCESS = Style.BRIGHT + Fore.GREEN + "SUCCESS" + Style.RESET_ALL
 INFO = Style.BRIGHT + Fore.LIGHTCYAN_EX + "INFO" + Style.RESET_ALL
 WARNING = Style.BRIGHT + Fore.YELLOW + "WARNING" + Style.RESET_ALL
+HELP = Fore.GREEN + "\x1B[3mhelp\x1B[0m" + Style.RESET_ALL
 
 
 CANCELLED = f'[{WARNING}] Function cancelled!'

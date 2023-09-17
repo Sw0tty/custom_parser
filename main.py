@@ -1,23 +1,22 @@
 """
 Main File MasterExcel
 """
-from classes.mas_parser import Parser
 from modules.parser.file_parser import FileParser
 from modules.parser.site_parser import SiteParser
 from modules.rebuilder import Rebuilder
-from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, module_styler
-from app_config.app_notices import UNEXPECTED, RESET_MODULE, INFO
-from app_config.help_commands import CURRENT_MODULE, MAIN_COMMANDS_DICT, MODULES,\
+from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, CURRENT_MODULE, module_styler
+from app_config.app_notices import UNEXPECTED, RESET_MODULE, INFO, HELP
+from app_config.help_commands import MAIN_COMMANDS_DICT, MODULES,\
     PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
 from classes.parent import MasterExcel
 
-parser = Parser(PARSER_COMMANDS_DICT)
-file_parser = FileParser(FILE_PARSER_COMMANDS_DICT)
+
+file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
 site_parser = SiteParser(SITE_PARSER_COMMANDS_DICT)
-rebuilder = Rebuilder(REBUILDER_COMMANDS_DICT)
+rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
 master_excel = MasterExcel(MAIN_COMMANDS_DICT)
 
-print(f"[{INFO}] Print 'help' for call list commands.")
+print(f"""[{INFO}] Print {HELP} for call list commands.""")
 
 
 def reset_module():
@@ -62,7 +61,7 @@ while True:
             case '5':
                 print(file_parser.parse_file(PARSER_DIVS_DICT))
             case '6':
-                print(file_parser.excel_import())
+                print(file_parser.excel_export())
 
     elif CURRENT_MODULE == 'site-parser':
         match input_command:
@@ -88,6 +87,6 @@ while True:
             case '5':
                 print(rebuilder.get_rebuild_status())
             case '6':
-                print(rebuilder.prepare_rebuild)
+                print(rebuilder.prepare_rebuild())
             case '7':
-                print(rebuilder.excel_import())
+                print(rebuilder.excel_export())

@@ -2,19 +2,22 @@ from datetime import date
 from colorama import Fore, Style
 
 
-TODAY = date.today().strftime('%d.%m.%Y')
+TODAY_DATE = date.today().strftime('%d.%m.%Y')
 
 NAME = 'MasterExcel'
 MASTER_CMD_INPUT = r'\>'
+CURRENT_MODULE = 'None-module'
 
 PARSER_HEADERS = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
 }
 
-SUPPORTED_FORMATS = ['.csv',]
+SUPPORTED_FORMATS = [('csv file', '*.csv'), ]
+
+DEFAULT_NAME_SAVE_FILE = f'Выгрузка {TODAY_DATE}'
 
 EXCEL_TEMPLATE = {
-    f'Выгрузка {TODAY}': [
+    f'Выгрузка {TODAY_DATE}': [
         ['Закупки по', 'Наименование закупки', 'Начальная (максимальная) цена контракта',
          'Наименование заказчика', 'Дата окончания подачи заявок', 'Интерес',
          'Категория', 'Ссылка']
@@ -39,8 +42,8 @@ ZAK_44 = 'https://zakupki.gov.ru/epz/order/notice/ea20/view/common-info.html?reg
 
 # Style the current selected module
 def module_styler(module):
-    # if CURRENT_MODULE not in MODULES:
-    #     return Fore.RED + module + Style.RESET_ALL
+    if module == CURRENT_MODULE:
+        return Fore.RED + module + Style.RESET_ALL
     return Fore.MAGENTA + module + Style.RESET_ALL
 
 

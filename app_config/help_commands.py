@@ -3,8 +3,6 @@ File with help commands
 """
 
 
-CURRENT_MODULE = 'None-module'
-
 MODULES = {
     'rebuilder': 'rebuilding the excel file for template',
     'file-parser': 'parse the file',

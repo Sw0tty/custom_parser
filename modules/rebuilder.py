@@ -2,6 +2,8 @@
 Working with excel file for rebuild raw site information
 Support (*.csv) format
 """
+import os
+
 import pyexcel
 import requests
 import pyexcel_xls  # For excel module!
@@ -15,8 +17,8 @@ from tkinter.filedialog import askopenfilename, askdirectory
 
 from classes.parent import MasterExcel
 from modules.parser.site_parser import URL_TEMPLATE
-from app_config.settings import TODAY, EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler
-from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, APPLY_STRING
+from app_config.settings import EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler, SUPPORTED_FORMATS
+from app_config.app_notices import ERROR, SUCCESS, INFO, WARNING, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, APPLY_STRING
 
 
 class Rebuilder(MasterExcel):
@@ -26,8 +28,8 @@ class Rebuilder(MasterExcel):
     SEARCHING_INFO = None
     LIST_PARSE_OBJECTS = None
 
-    def __init__(self, commands: dict):
-        super().__init__(commands)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.__file_path = None
         self.__file_name = None
         self.__already_rebuild = False
@@ -53,7 +55,7 @@ class Rebuilder(MasterExcel):
 
         filepath = askopenfilename(initialdir=getcwd(),
                                    title="Open file",
-                                   filetypes=(('csv file', '*.csv'), ('all files', '*'))
+                                   filetypes=(*SUPPORTED_FORMATS, ('all files', '*'))
                                    )
 
         if filepath:
@@ -62,7 +64,7 @@ class Rebuilder(MasterExcel):
                 self.__file_name = basename(self.__file_path)
                 self.__already_rebuild = False
                 return self.get_selected_file_path(True)
-            return f'[{ERROR}] File must have csv extension!'
+            return f"""[{ERROR}] File must have ({', '.join([i[1] for i in SUPPORTED_FORMATS])}) extension!"""
         return CANCELLED
 
     def get_rebuild_status(self, rebuilding=False):
@@ -118,19 +120,50 @@ class Rebuilder(MasterExcel):
 
         return self.get_rebuild_status(True)
 
-    def excel_import(self):
+    def excel_export(self):
         if not self.__file_path:
             return self.get_selected_file_path()
 
         if not self.__already_rebuild:
             return self.get_rebuild_status()
 
-        path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
+        return self._save_file(self.IMPORT_DATA)
 
-        if path_dir:
-            chdir(path_dir)
-            # if os.path.exists(f"Выгрузка {TODAY}.xls"):
-            #     pyexcel.save_book_as(bookdict=self.IMPORT_DATA, dest_file_name=f"Выгрузка {TODAY}.xls")
-            pyexcel.save_book_as(bookdict=self.IMPORT_DATA, dest_file_name=f"Выгрузка {TODAY}.xls")
-            return f'[{SUCCESS}] File created!'
-        return CANCELLED
+        # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
+        #
+        # if not path_dir:
+        #     return CANCELLED
+        #
+        # chdir(path_dir)
+        #
+        # if os.path.exists(f"Выгрузка {TODAY}.xls"):
+        #     answer = input(f"""[{WARNING}] File already exist. Overwrite file? 'Yes' to accept. """ +
+        #                    """'no' to save as copy name.\nAnswer: """)
+        #
+        #     match answer:
+        #         case 'Yes':
+        #             try:
+        #                 pyexcel.save_book_as(bookdict=self.IMPORT_DATA, dest_file_name=f"Выгрузка {TODAY}.xls")
+        #                 return f'[{SUCCESS}] File created!'
+        #             except PermissionError:
+        #                 return f'[{ERROR}] Overwritten file is open in another program!'
+        #         case 'no':
+        #             count_try = 1
+        #             while True:
+        #                 if not os.path.exists(f"Выгрузка {TODAY}({count_try}).xls"):
+        #                     pyexcel.save_book_as(bookdict=self.IMPORT_DATA,
+        #                                          dest_file_name=f"Выгрузка {TODAY}({count_try}).xls")
+        #                     return f'[{SUCCESS}] File created!'
+        #                 count_try += 1
+        #         case _:
+        #             return CANCELLED
+
+
+if __name__ == '__main__':
+    from app_config.help_commands import REBUILDER_COMMANDS_DICT
+    rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
+
+    os.chdir(r'D:\PyProjects\custom_parser\html_files')
+    print(rebuilder.set_selected_file())
+    print(rebuilder.prepare_rebuild())
+    print(rebuilder.excel_export())

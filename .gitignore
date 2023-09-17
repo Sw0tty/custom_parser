@@ -4,3 +4,4 @@ venv/
 exe_build/
 output/
 html_files/**
+test.py

@@ -13,7 +13,7 @@ from colorama import init
 from copy import deepcopy
 from bs4 import BeautifulSoup as bS
 from tkinter.filedialog import askopenfilename, askdirectory
-from app_config.settings import TODAY, ERROR, SUCCESS, INFO, EXCEL_TEMPLATE
+from app_config.settings import TODAY_DATE, ERROR, SUCCESS, INFO, EXCEL_TEMPLATE
 
 
 init()
@@ -24,14 +24,14 @@ DEFAULT_RESULTS = 20
 
 DAYS_AGO = (datetime.datetime.now() - datetime.timedelta(days=COUNT_DAYS)).strftime("%d.%m.%Y")
 
-MAIN_URL = f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhString={SEARCH}morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber=1&recordsPerPage=_{DEFAULT_RESULTS}&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&priceFromGeneral=500000&currencyIdGeneral=-1&publishDateFrom={DAYS_AGO}&publishDateTo={TODAY}'
+MAIN_URL = f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhString={SEARCH}morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber=1&recordsPerPage=_{DEFAULT_RESULTS}&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&priceFromGeneral=500000&currencyIdGeneral=-1&publishDateFrom={DAYS_AGO}&publishDateTo={TODAY_DATE}'
 
 
 TEST_URL = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html'
 
 DEFAULT_URL = TEST_URL
 
-TEST = f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhString={SEARCH}morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber=1&recordsPerPage=_50&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&priceFromGeneral=500000&currencyIdGeneral=-1&publishDateFrom={DAYS_AGO}&publishDateTo={TODAY}'
+TEST = f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhString={SEARCH}morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber=1&recordsPerPage=_50&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&priceFromGeneral=500000&currencyIdGeneral=-1&publishDateFrom={DAYS_AGO}&publishDateTo={TODAY_DATE}'
 
 TEST2 = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber=1&recordsPerPage=_20&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&priceFromGeneral=500000&currencyIdGeneral=-1&publishDateFrom=20.08.2023&publishDateTo=23.08.2023'
 
@@ -220,7 +220,7 @@ class Parser:
         path_dir = askdirectory(initialdir=os.getcwd(), title="Save in...")
         if path_dir:
             os.chdir(path_dir)
-            pyexcel.save_book_as(bookdict=self.IMPORT_DATA, dest_file_name=f"Выгрузка {TODAY}.xls")
+            pyexcel.save_book_as(bookdict=self.IMPORT_DATA, dest_file_name=f"Выгрузка {TODAY_DATE}.xls")
             return f'[{SUCCESS}] File created!'
         return f'[{INFO}] Cancelled'
 
