@@ -3,7 +3,7 @@ Working with excel file for rebuild raw site information
 Support (*.csv) format
 """
 import os
-
+import csv
 import pyexcel
 import requests
 import pyexcel_xls  # For excel module!
@@ -15,7 +15,7 @@ from os.path import basename
 from bs4 import BeautifulSoup as bS
 from tkinter.filedialog import askopenfilename, askdirectory
 
-from classes.parent import MasterExcel
+from classes.mas_parser import MasterExcel
 from modules.parser.site_parser import URL_TEMPLATE
 from app_config.settings import EXCEL_TEMPLATE, ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler, SUPPORTED_FORMATS
 from app_config.app_notices import ERROR, SUCCESS, INFO, WARNING, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, APPLY_STRING
@@ -25,8 +25,6 @@ class Rebuilder(MasterExcel):
 
     _EXCEL_TEMPLATE = EXCEL_TEMPLATE
     IMPORT_DATA = deepcopy(_EXCEL_TEMPLATE)
-    SEARCHING_INFO = None
-    LIST_PARSE_OBJECTS = None
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -73,7 +71,7 @@ class Rebuilder(MasterExcel):
             return f'[{status}] Data ready to export!'
         return f'[{ERROR}] Nothing to export!'
 
-    def prepare_rebuild(self):
+    def prepare_rebuild(self, columns_name=True):
         if not self.__file_path:
             return self.get_file_name()
 
@@ -83,14 +81,51 @@ class Rebuilder(MasterExcel):
                 return CANCELLED
             self.IMPORT_DATA = deepcopy(self._EXCEL_TEMPLATE)
 
-        with open(self.__file_path, 'r') as open_file:
-            open_file.readline()
+        # with open(self.__file_path, 'r') as open_file:
+        #     open_file.readline()
 
-            while True:
-                values_list = open_file.readline().strip().split(';')
+        #     while True:
+        #         values_list = open_file.readline().strip().split(';')
 
-                if len(values_list) <= 1:
-                    break
+        #         if len(values_list) <= 1:
+        #             break
+        #         replays_value = values_list.pop(1)[1:]
+        #         values_list[2] = price_styler(values_list[2])
+        #         values_list.append('')
+        #         values_list.append(3)
+
+        #         if '223' in values_list[0]:
+        #             for i in range(0, 4):
+        #                 connection = requests.get(URL_TEMPLATE + replays_value, headers=PARSER_HEADERS)
+        #                 sleep(2)
+
+        #                 if connection.status_code == 200:
+        #                     self.SEARCHING_INFO = bS(connection.text, "html.parser")
+        #                     list_parse_objects = self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
+
+        #                     for parse_obj in list_parse_objects:
+        #                         _ = parse_obj.find('div', class_=PARSER_DIVS_DICT['org_href'][0])
+        #                         children = _.findChildren('a')
+        #                         children = children[0].get('href')
+        #                         replays_value = f'https://zakupki.gov.ru{children}'
+        #                     break
+        #             values_list.append(replays_value)
+        #         else:
+        #             values_list.append(ZAK_44 + replays_value)
+        #         self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
+
+        # self.__already_rebuild = True
+
+        # return self.get_rebuild_status(True)
+
+        with open(self.__file_path, 'r') as csvfile:
+            reader = [*csv.reader(csvfile, delimiter=';')]
+            
+            cut_first_row = 1 if columns_name else 0
+
+            for row in reader[cut_first_row:]:
+                values_list = row
+
                 replays_value = values_list.pop(1)[1:]
                 values_list[2] = price_styler(values_list[2])
                 values_list.append('')
@@ -102,10 +137,10 @@ class Rebuilder(MasterExcel):
                         sleep(2)
 
                         if connection.status_code == 200:
-                            self.SEARCHING_INFO = bS(connection.text, "html.parser")
-                            self.LIST_PARSE_OBJECTS = self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
+                            data = bS(connection.text, "html.parser")
+                            list_parse_objects = data.find_all('div', class_=MAIN_PARSER_BLOCK)
 
-                            for parse_obj in self.LIST_PARSE_OBJECTS:
+                            for parse_obj in list_parse_objects:
                                 _ = parse_obj.find('div', class_=PARSER_DIVS_DICT['org_href'][0])
                                 children = _.findChildren('a')
                                 children = children[0].get('href')
@@ -163,7 +198,7 @@ if __name__ == '__main__':
     from app_config.help_commands import REBUILDER_COMMANDS_DICT
     rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
 
-    os.chdir(r'D:\PyProjects\custom_parser\html_files')
+    os.chdir('')
     print(rebuilder.set_selected_file())
     print(rebuilder.prepare_rebuild())
     print(rebuilder.excel_export())

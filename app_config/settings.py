@@ -15,9 +15,10 @@ PARSER_HEADERS = {
 SUPPORTED_FORMATS = [('csv file', '*.csv'), ]
 
 DEFAULT_NAME_SAVE_FILE = f'Выгрузка {TODAY_DATE}'
+DEFAULT_FILE_SHEET_NAME = f'Выгрузка {TODAY_DATE}'
 
 EXCEL_TEMPLATE = {
-    f'Выгрузка {TODAY_DATE}': [
+    DEFAULT_FILE_SHEET_NAME: [
         ['Закупки по', 'Наименование закупки', 'Начальная (максимальная) цена контракта',
          'Наименование заказчика', 'Дата окончания подачи заявок', 'Интерес',
          'Категория', 'Ссылка']
