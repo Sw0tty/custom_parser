@@ -5,9 +5,9 @@ from modules.parser.file_parser import FileParser
 from modules.parser.site_parser import SiteParser
 from modules.rebuilder import Rebuilder
 from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, CURRENT_MODULE, module_styler
-from app_config.app_notices import UNEXPECTED, RESET_MODULE, INFO, HELP
-from app_config.help_commands import MAIN_COMMANDS_DICT, MODULES,\
-    PARSER_COMMANDS_DICT, REBUILDER_COMMANDS_DICT, FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
+from app_config.app_notices import RESET_MODULE, INFO, HELP
+from app_config.help_commands import MAIN_COMMANDS_DICT, MODULES, REBUILDER_COMMANDS_DICT,\
+    FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
 from classes.parent import MasterExcel
 
 

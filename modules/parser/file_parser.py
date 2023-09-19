@@ -8,14 +8,12 @@ from os.path import basename
 import pyexcel
 import pyexcel_xls  # For excel module!
 from pyexcel_io import writers  # For excel module!
-from time import sleep
 from colorama import init
-from copy import deepcopy
 from bs4 import BeautifulSoup as bS
 from classes.parent import MasterExcel
 from tkinter.filedialog import askopenfilename, askdirectory
-from app_config.settings import EXCEL_TEMPLATE, price_styler, MAIN_PARSER_BLOCK
-from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, INFO
+from app_config.settings import price_styler, MAIN_PARSER_BLOCK
+from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, INFO, APPLY_STRING
 
 init()
 
@@ -26,15 +24,11 @@ class FileParser(MasterExcel):
 
     LIST_PARSE_OBJECTS = None
 
-    _EXCEL_TEMPLATE = EXCEL_TEMPLATE
-
-    IMPORT_DATA = deepcopy(_EXCEL_TEMPLATE)
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.__file_path = None
         self.__file_name = None
-        self.__ready_to_import = False
+        self.__ready_to_export = False
 
     def get_file_name(self):
         if self.__file_path:
@@ -47,9 +41,14 @@ class FileParser(MasterExcel):
         return FILE_UNDEFINED
 
     def set_file_path(self):
+        if self.__file_path:
+            answer = input(APPLY_STRING)
+            if answer != 'Yes':
+                return CANCELLED
+
         filepath = askopenfilename(initialdir=getcwd(),
                                    title="Open file",
-                                   filetypes=(('html file', '*.html'), ('all files', '*'))
+                                   filetypes=(('HTML file', '*.html'), ('All files', '*'))
                                    )
 
         if filepath:
@@ -64,6 +63,12 @@ class FileParser(MasterExcel):
 
         if not self.__file_path:
             return self.get_file_name()
+
+        if self.__ready_to_export:
+            answer = input(APPLY_STRING)
+            if answer != 'Yes':
+                return CANCELLED
+            self.reset_export_data()
 
         with open(self.__file_path, 'r', encoding='utf-8') as open_file:
             self.SEARCHING_INFO = bS(open_file.read(), 'lxml')
@@ -103,11 +108,11 @@ class FileParser(MasterExcel):
 
                 values_list.append(_)
 
-            self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
+            self.EXPORT_DATA[next(iter(self.EXPORT_DATA))].append(values_list.copy())
 
         # ----
 
-        self.__ready_to_import = True
+        self.__ready_to_export = True
         
         return f'[{SUCCESS}] File ready to export'
 
@@ -116,7 +121,7 @@ class FileParser(MasterExcel):
             self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
 
     def file_ready(self):
-        if self.__ready_to_import:
+        if self.__ready_to_export:
             return f'[{INFO}] Data ready to import.'
         return f'[{ERROR}] Data undefined!'
 
@@ -124,4 +129,4 @@ class FileParser(MasterExcel):
         if not self.SEARCHING_INFO:
             return self.get_file_path()
 
-        return self._save_file(self.IMPORT_DATA)
+        return self._save_file(self.EXPORT_DATA)

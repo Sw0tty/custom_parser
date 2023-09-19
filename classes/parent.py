@@ -1,22 +1,37 @@
 """
 File with MasterExcel class
 """
-import os
 from os import getcwd, path, chdir, listdir
 import pyexcel
-from app_config.app_notices import FILE_UNDEFINED, CANCELLED, ERROR_FILE_EXTENSION, INFO, ERROR, WARNING, SUCCESS, FILE_CREATED
+from copy import deepcopy
+from app_config.app_notices import CANCELLED, ERROR_FILE_EXTENSION, ERROR, WARNING, SUCCESS, FILE_CREATED
 from tkinter.filedialog import askopenfilename, askdirectory
-from app_config.settings import TODAY_DATE, DEFAULT_NAME_SAVE_FILE
+from app_config.settings import DEFAULT_NAME_SAVE_FILE, EXCEL_TEMPLATE
 
 
 class MasterExcel:
 
     def __init__(self, commands: dict):
         self.__commands = commands
+        self.EXPORT_DATA = None
 
     def help(self):
         for key in self.__commands.keys():
             print(f'\t{key} - {self.__commands[key]}')
+
+    def reset_export_data(self):
+        self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
+
+    @staticmethod
+    def left_titles():
+        answer = input("""Left the titles of columns? Yes to accept, no to cut.\nAnswer: """).strip()
+        match answer:
+            case 'Yes':
+                return True
+            case 'no':
+                return False
+            case _:
+                return None
 
     @staticmethod
     def _save_file(import_data):
