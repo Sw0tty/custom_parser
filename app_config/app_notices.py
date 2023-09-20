@@ -19,5 +19,5 @@ FILE_PATH = f'[{INFO}] Path to selected file: '
 FILE_NAME = f'[{INFO}] Name of selected file: '
 ERROR_FILE_EXTENSION = f'[{ERROR}] File must have html extension!'
 RESET_MODULE = f'[{SUCCESS}] Module reset!'
-APPLY_STRING = f"""[{INFO}] Inter 'Yes' to reload data: """
+APPLY_STRING = f"""[{INFO}] Inter 'Yes' to parse file again: """
 FILE_ALREADY_SELECTED = f'[{WARNING}]'

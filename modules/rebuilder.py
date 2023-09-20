@@ -78,6 +78,8 @@ class Rebuilder(MasterExcel):
                 return CANCELLED
             self.reset_export_data()
 
+        print(self._check_export_data())
+
         # with open(self.__file_path, 'r') as open_file:
         #     open_file.readline()
 
@@ -115,13 +117,10 @@ class Rebuilder(MasterExcel):
 
         # return self.get_rebuild_status(True)
 
-        if self.get_file_name().endswith('.csv'):
-            with open(self.__file_path, 'r') as csvfile:
-                reader = [*csv.reader(csvfile, delimiter=';')]
-        elif self.get_file_name().endswith('.xls'):
-            pass
-        elif self.get_file_name().endswith('.xlsx'):
-            pass
+        reader = self._file_reader(self.get_file_extansion(self.__file_name), self.__file_path)
+
+        if reader is None:
+            return f'[{ERROR}] Extansion error!'
             
         cut_first_row = 1 if columns_name else 0
 

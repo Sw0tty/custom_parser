@@ -91,7 +91,7 @@ class FileParser(MasterExcel):
                         _ = _[:-1].rstrip() if class_key == 'price' else _
 
                     if class_key == 'purchases':
-                        _ = _[0:6] if _[0] == '4' else _[0:7]
+                        _ = _[0:5] if _[0] == '4' else _[0:6]
 
                     if class_key == 'end_date':
                         _ = _.findChildren('div', class_='data-block__value', recursive=False)

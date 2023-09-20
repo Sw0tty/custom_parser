@@ -1,10 +1,14 @@
 """
 File with MasterExcel class
 """
-from os import getcwd, path, chdir, listdir
+import os
+from os import getcwd, chdir, listdir
+import xlrd
 import pyexcel
+import openpyxl
+import csv
 from copy import deepcopy
-from app_config.app_notices import CANCELLED, ERROR_FILE_EXTENSION, ERROR, WARNING, SUCCESS, FILE_CREATED
+from app_config.app_notices import CANCELLED, ERROR_FILE_EXTENSION, ERROR, WARNING, SUCCESS, FILE_CREATED, INFO
 from tkinter.filedialog import askopenfilename, askdirectory
 from app_config.settings import DEFAULT_NAME_SAVE_FILE, EXCEL_TEMPLATE
 
@@ -13,14 +17,66 @@ class MasterExcel:
 
     def __init__(self, commands: dict):
         self.__commands = commands
-        self.EXPORT_DATA = None
+        self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
 
     def help(self):
         for key in self.__commands.keys():
             print(f'\t{key} - {self.__commands[key]}')
 
-    def reset_export_data(self):
+    def reset_export_data(self, reset=False):        
         self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
+        return f'[{SUCCESS}] Data reset!'
+
+    def _check_export_data(self):
+        if self.EXPORT_DATA is None:
+            return f'[{INFO}] Data undefined!'
+
+        if len(self.EXPORT_DATA[DEFAULT_NAME_SAVE_FILE]) > 1:
+            answer = input("""Data not default. 'Yes' to set to default. 'no' to add data.\nAnswer: """)
+            match answer:
+                case 'Yes':
+                    return self.reset_export_data(True)
+                case 'no':
+                    return f'[{INFO}] Data be added.'
+                case _:
+                    return CANCELLED                
+
+    @staticmethod
+    def get_file_extansion(file_name: str) -> str:
+        return file_name[file_name.rfind('.'):]
+
+    @staticmethod
+    def _file_reader(file_extansion, file_path) -> list:
+        match file_extansion:
+            case '.csv':
+                with open(file_path, 'r') as csvfile:
+                    reader = [*csv.reader(csvfile, delimiter=';')]
+            # case '.xls':
+            #     reader = pyexcel.get_array(file_path)
+
+            #     reader = xlrd.open_workbook(r'C:\Users\Егор\Desktop\testxls.xls')
+            #     sheet = reader.sheet_by_index(0)
+
+            #     data = []
+            #     for row in range(sheet.nrows):
+            #         for cell in sheet.row(row):
+            #             data.append(cell.value)
+            case '.xlsx':
+                worksheet = openpyxl.load_workbook(file_path).active
+                print(1)
+                reader = []
+                data = []
+
+                for i in range(0, worksheet.max_row):
+                    for col in worksheet.iter_cols(1, worksheet.max_column):
+                        value = col[i].value if col[i].value else ''
+                        data.append(value)
+                    reader.append(data.copy())
+                    data.clear()   
+                print(2)                
+            case _:
+                return None
+        return reader
 
     @staticmethod
     def left_titles():
@@ -57,7 +113,7 @@ class MasterExcel:
                 case 'no':
                     count_try = 1
                     while True:
-                        if not path.exists(f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls"):
+                        if not os.path.exists(f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls"):
                             pyexcel.save_book_as(bookdict=import_data,
                                                  dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls")
                             return FILE_CREATED
