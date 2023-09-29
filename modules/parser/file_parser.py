@@ -122,7 +122,7 @@ class FileParser(MasterExcel):
 
     def file_ready(self):
         if self.__ready_to_export:
-            return f'[{INFO}] Data ready to import.'
+            return f'[{INFO}] Data ready to export.'
         return f'[{ERROR}] Data undefined!'
 
     def excel_export(self):

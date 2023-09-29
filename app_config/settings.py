@@ -25,6 +25,12 @@ EXCEL_TEMPLATE = {
     ]
 }
 
+OPENPX_EXCEL_TEMPLATE = [
+    ['Закупки по', 'Наименование закупки', 'Начальная (максимальная) цена контракта',
+         'Наименование заказчика', 'Дата окончания подачи заявок', 'Интерес',
+         'Категория', 'Ссылка']
+         ]
+
 # Main site block with parsing info
 MAIN_PARSER_BLOCK = "search-registry-entry-block box-shadow-search-input"
 

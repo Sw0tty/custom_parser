@@ -63,7 +63,6 @@ class MasterExcel:
             #             data.append(cell.value)
             case '.xlsx':
                 worksheet = openpyxl.load_workbook(file_path).active
-                print(1)
                 reader = []
                 data = []
 
@@ -72,8 +71,7 @@ class MasterExcel:
                         value = col[i].value if col[i].value else ''
                         data.append(value)
                     reader.append(data.copy())
-                    data.clear()   
-                print(2)                
+                    data.clear()                  
             case _:
                 return None
         return reader
