@@ -3,10 +3,10 @@ Working with excel file for rebuild raw site information
 Support (*.csv) format
 """
 import csv
-import pyexcel
+# import pyexcel
 import requests
-import pyexcel_xls  # For excel module!
-from pyexcel_io import writers  # For excel module!
+# import pyexcel_xls  # For excel module!
+# from pyexcel_io import writers  # For excel module!
 from time import sleep
 from os import getcwd, chdir
 from os.path import basename
@@ -152,6 +152,8 @@ class Rebuilder(MasterExcel):
                 values_list.append(ZAK_44 + replays_value)
             self.EXPORT_DATA[next(iter(self.EXPORT_DATA))].append(values_list.copy())
 
+            self.OPEN_.append(values_list.copy())
+
         self.__already_rebuild = True
 
         return self.get_rebuild_status(True)
@@ -163,7 +165,7 @@ class Rebuilder(MasterExcel):
         if not self.__already_rebuild:
             return self.get_rebuild_status()
 
-        return self._save_file(self.EXPORT_DATA)
+        return self._save_file(self.EXPORT_DATA, self.OPEN_)
 
         # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
         #

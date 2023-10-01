@@ -4,13 +4,16 @@ File with MasterExcel class
 import os
 from os import getcwd, chdir, listdir
 import xlrd
-import pyexcel
+# import pyexcel
 import openpyxl
 import csv
 from copy import deepcopy
+from tkinter import filedialog
+from tkinter.commondialog import Dialog
 from app_config.app_notices import CANCELLED, ERROR_FILE_EXTENSION, ERROR, WARNING, SUCCESS, FILE_CREATED, INFO
-from tkinter.filedialog import askopenfilename, askdirectory
-from app_config.settings import DEFAULT_NAME_SAVE_FILE, EXCEL_TEMPLATE
+from tkinter.filedialog import askopenfilename, askdirectory, asksaveasfile, asksaveasfilename
+from app_config.settings import DEFAULT_NAME_SAVE_FILE, EXCEL_TEMPLATE, OPENPX_EXCEL_TEMPLATE, SUPPORTED_FORMATS
+from openpyxl import Workbook
 
 
 class MasterExcel:
@@ -18,6 +21,7 @@ class MasterExcel:
     def __init__(self, commands: dict):
         self.__commands = commands
         self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
+        self.OPEN_ = deepcopy(OPENPX_EXCEL_TEMPLATE)
 
     def help(self):
         for key in self.__commands.keys():
@@ -88,39 +92,76 @@ class MasterExcel:
                 return None
 
     @staticmethod
-    def _save_file(import_data):
+    def _save_file(import_data, import_data_open):
 
-        path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
+        # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
 
-        if not path_dir:
+        # if not path_dir:
+        #     return CANCELLED
+
+        # chdir(path_dir)
+
+        wb = Workbook()
+        ws = wb.active
+        ws.title = DEFAULT_NAME_SAVE_FILE
+
+        for row in import_data_open:
+            ws.append(row)
+
+        # if DEFAULT_NAME_SAVE_FILE in [file_name[:file_name.rfind('.')] for file_name in listdir()]:
+        #     answer = input(f"""[{WARNING}] File already exist. Overwrite file? 'Yes' to accept. """ +
+        #                    """'no' to save as copy name.\nAnswer: """)
+
+        #     match answer:
+        #         case 'Yes':
+        #             try:
+        #                 pyexcel.save_book_as(bookdict=import_data, dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}.xls")
+        #                 return f'[{SUCCESS}] File created!'
+        #             except PermissionError:
+        #                 return f'[{ERROR}] Overwritten file is open in another program!'
+        #         case 'no':
+        #             count_try = 1
+        #             while True:
+        #                 if not os.path.exists(f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls"):
+        #                     pyexcel.save_book_as(bookdict=import_data,
+        #                                          dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls")
+        #                     return FILE_CREATED
+        #                 count_try += 1
+        #         case _:
+        #             return CANCELLED
+        
+        try:
+            wb.save(
+                asksaveasfilename(
+                    initialfile=DEFAULT_NAME_SAVE_FILE,
+                    title="Save file",
+                    initialdir=os.getcwd(),
+                    filetypes=(*SUPPORTED_FORMATS, ('All files', '*')),
+                    defaultextension=True
+                    )
+            )
+            return FILE_CREATED
+        except FileNotFoundError:
             return CANCELLED
+        
+        
 
-        chdir(path_dir)
+        # pyexcel.save_book_as(bookdict=import_data, dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}.xls")
 
-        if DEFAULT_NAME_SAVE_FILE in [file_name[:file_name.rfind('.')] for file_name in listdir()]:
-            answer = input(f"""[{WARNING}] File already exist. Overwrite file? 'Yes' to accept. """ +
-                           """'no' to save as copy name.\nAnswer: """)
+        # 
+        # wb = Workbook()
 
-            match answer:
-                case 'Yes':
-                    try:
-                        pyexcel.save_book_as(bookdict=import_data, dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}.xls")
-                        return f'[{SUCCESS}] File created!'
-                    except PermissionError:
-                        return f'[{ERROR}] Overwritten file is open in another program!'
-                case 'no':
-                    count_try = 1
-                    while True:
-                        if not os.path.exists(f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls"):
-                            pyexcel.save_book_as(bookdict=import_data,
-                                                 dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls")
-                            return FILE_CREATED
-                        count_try += 1
-                case _:
-                    return CANCELLED
+        # ws = wb.active
+        # ws.title = DEFAULT_NAME_SAVE_FILE
 
-        pyexcel.save_book_as(bookdict=import_data, dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}.xls")
-        return FILE_CREATED
+        # for row in import_data_open:
+        #     ws.append(row)
+
+        # wb.save(f"{DEFAULT_NAME_SAVE_FILE}.xlsx")
+        # wb.save(f"{DEFAULT_NAME_SAVE_FILE}openpyxlxls.xls")
+        # 
+
+        
 
     # def get_parser_type(self):
     #     return f'[{INFO}] Now parser type is: {self.__parser_type}'
