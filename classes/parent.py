@@ -136,7 +136,7 @@ class MasterExcel:
                     initialfile=DEFAULT_NAME_SAVE_FILE,
                     title="Save file",
                     initialdir=os.getcwd(),
-                    filetypes=(*SUPPORTED_FORMATS, ('All files', '*')),
+                    filetypes=(SUPPORTED_FORMATS[1], ('All files', '*')),
                     defaultextension=True
                     )
             )
