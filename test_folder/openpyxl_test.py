@@ -35,9 +35,28 @@ ws['A1'] = "TEST"
 # Save the file
 
 
-sheet = pandas.read_excel(r'C:\Users\Егор\Desktop\testxls.xls')
+# sheet = pandas.read_excel(r'C:\Users\Егор\Desktop\testxls.xls')
 
+class A:
 
+    def __init__(self, vla) -> None:
+        self.a_param = vla
+    
+    @property
+    def a_param(self):
+        return self.a
+    
+    @a_param.setter
+    def a_param(self, new):
+        self.a = new
+
+a = A(1)
+
+print(a.a_param)
+
+a.a_param = 45
+
+print(a.a_param)
 
 
 # try:

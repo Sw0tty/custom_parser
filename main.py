@@ -11,10 +11,16 @@ from app_config.help_commands import MAIN_COMMANDS_DICT, MODULES, REBUILDER_COMM
 from classes.parent import MasterExcel
 
 
+master_excel = MasterExcel(MAIN_COMMANDS_DICT)
 file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
 site_parser = SiteParser(SITE_PARSER_COMMANDS_DICT)
 rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
-master_excel = MasterExcel(MAIN_COMMANDS_DICT)
+
+print(master_excel.EXPORT_DATA)
+print(rebuilder.EXPORT_DATA)
+
+rebuilder.EXPORT_DATA.append([2, 3, 4])
+print(file_parser.EXPORT_DATA)
 
 print(f"""[{INFO}] Print {HELP} for call list commands.""")
 

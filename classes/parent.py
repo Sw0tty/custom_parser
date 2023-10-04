@@ -12,7 +12,7 @@ from tkinter import filedialog
 from tkinter.commondialog import Dialog
 from app_config.app_notices import CANCELLED, ERROR_FILE_EXTENSION, ERROR, WARNING, SUCCESS, FILE_CREATED, INFO
 from tkinter.filedialog import askopenfilename, askdirectory, asksaveasfile, asksaveasfilename
-from app_config.settings import DEFAULT_NAME_SAVE_FILE, EXCEL_TEMPLATE, OPENPX_EXCEL_TEMPLATE, SUPPORTED_FORMATS
+from app_config.settings import DEFAULT_NAME_SAVE_FILE, EXCEL_TEMPLATE, SUPPORTED_FORMATS
 from openpyxl import Workbook
 
 
@@ -21,7 +21,6 @@ class MasterExcel:
     def __init__(self, commands: dict):
         self.__commands = commands
         self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
-        self.OPEN_ = deepcopy(OPENPX_EXCEL_TEMPLATE)
 
     def help(self):
         for key in self.__commands.keys():
@@ -92,7 +91,7 @@ class MasterExcel:
                 return None
 
     @staticmethod
-    def _save_file(import_data, import_data_open, file_extansion):
+    def _save_file(import_data, file_extansion):
         
         file = asksaveasfilename(
                     initialfile=DEFAULT_NAME_SAVE_FILE,
@@ -111,7 +110,7 @@ class MasterExcel:
                 ws = wb.active
                 ws.title = DEFAULT_NAME_SAVE_FILE
 
-                for row in import_data_open:
+                for row in import_data:
                     ws.append(row)
                 wb.save(file)
 
@@ -119,7 +118,7 @@ class MasterExcel:
                 with open(file, 'w') as csvfilewrite:
                     writer = csv.writer(csvfilewrite, lineterminator="\r", delimiter = ";")
                     
-                    for i in import_data_open:
+                    for i in import_data:
                         writer.writerow(i)
             case _:
                 return f'[{ERROR}] Unexpected extansion!'

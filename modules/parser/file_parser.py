@@ -109,7 +109,7 @@ class FileParser(MasterExcel):
                 values_list.append(_)
 
             # self.EXPORT_DATA[next(iter(self.EXPORT_DATA))].append(values_list.copy())
-            self.OPEN_.append(values_list.copy())
+            self.EXPORT_DATA.append(values_list.copy())
 
         # ----
 
@@ -130,4 +130,4 @@ class FileParser(MasterExcel):
         if not self.SEARCHING_INFO:
             return self.get_file_path()
 
-        return self._save_file(self.EXPORT_DATA, self.OPEN_, self.get_file_extansion)
+        return self._save_file(self.EXPORT_DATA, self.get_file_extansion)

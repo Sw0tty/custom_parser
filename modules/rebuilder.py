@@ -60,7 +60,7 @@ class Rebuilder(MasterExcel):
 
         filepath = askopenfilename(initialdir=getcwd(),
                                    title="Open file",
-                                   filetypes=(*SUPPORTED_FORMATS, ('All files', '*'))
+                                   filetypes=(*SUPPORTED_FORMATS[:2], ('All files', '*'))
                                    )
 
         if filepath:
@@ -157,7 +157,7 @@ class Rebuilder(MasterExcel):
                 values_list.append(ZAK_44 + replays_value)
             self.EXPORT_DATA[next(iter(self.EXPORT_DATA))].append(values_list.copy())
 
-            self.OPEN_.append(values_list.copy())
+            self.EXPORT_DATA.append(values_list.copy())
 
         self.__already_rebuild = True
 
@@ -170,7 +170,7 @@ class Rebuilder(MasterExcel):
         if not self.__already_rebuild:
             return self.get_rebuild_status()
 
-        return self._save_file(self.EXPORT_DATA, self.OPEN_, self.get_file_extansion)
+        return self._save_file(self.EXPORT_DATA, self.get_file_extansion)
 
         # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
         #
