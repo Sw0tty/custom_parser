@@ -1,6 +1,6 @@
 """
 Working with excel file for rebuild raw site information
-Support (*.csv) format
+Support (*.csv, *.xlsx) format
 """
 import csv
 # import pyexcel
@@ -12,6 +12,7 @@ from os import getcwd, chdir
 from os.path import basename
 from bs4 import BeautifulSoup as bS
 from tkinter.filedialog import askopenfilename, askdirectory
+from tkinter import messagebox
 
 from classes.mas_parser import MasterExcel
 from modules.parser.site_parser import URL_TEMPLATE
@@ -26,6 +27,10 @@ class Rebuilder(MasterExcel):
         self.__file_path = None
         self.__file_name = None
         self.__already_rebuild = False
+
+    def get_params_status(self):
+        return messagebox.showinfo(title='Parametrs status',
+                                   message=f'File path: {self.get_selected_file_path()}\nFile name: {self.get_selected_file_path()}')
 
     def get_file_name(self):
         if self.__file_path:
@@ -78,7 +83,7 @@ class Rebuilder(MasterExcel):
                 return CANCELLED
             self.reset_export_data()
 
-        print(self._check_export_data())
+        # print(self._check_export_data())
 
         # with open(self.__file_path, 'r') as open_file:
         #     open_file.readline()
@@ -165,7 +170,7 @@ class Rebuilder(MasterExcel):
         if not self.__already_rebuild:
             return self.get_rebuild_status()
 
-        return self._save_file(self.EXPORT_DATA, self.OPEN_)
+        return self._save_file(self.EXPORT_DATA, self.OPEN_, self.get_file_extansion)
 
         # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
         #

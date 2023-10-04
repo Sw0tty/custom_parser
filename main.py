@@ -81,7 +81,7 @@ while True:
             case '2':
                 print(rebuilder.set_selected_file())
             case '3':
-                print(rebuilder.get_selected_file_path())
+                rebuilder.get_params_status()
             case '4':
                 print(rebuilder.get_file_name())
             case '5':

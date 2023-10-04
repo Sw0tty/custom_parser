@@ -49,7 +49,7 @@ PARSER_COMMANDS_DICT = {
 REBUILDER_COMMANDS_DICT = {
     '1': 'all commands in current module',
     '2': 'set file for rebuild',
-    '3': 'get file path',
+    '3': 'get parametrs status',
     '4': 'get file name',
     '5': 'check rebuild info',
     '6': 'prepare rebuild to export in excel file',

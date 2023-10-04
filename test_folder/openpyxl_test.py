@@ -1,8 +1,17 @@
 import openpyxl
 import datetime
 import os
+import csv
 from tkinter import filedialog
+import pandas
+
 SUPPORTED_FORMATS = [('CSV file', '*.csv'), ('Excel book', '*.xlsx'), ]
+
+OPENPX_EXCEL_TEMPLATE = [
+    ['Закупки по', 'Наименование закупки', 'Начальная (максимальная) цена контракта',
+         'Наименование заказчика', 'Дата окончания подачи заявок', 'Интерес',
+         'Категория', 'Ссылка']
+         ]
 
 os.chdir(os.getcwd() + r'\test_folder')
 
@@ -24,7 +33,34 @@ ws['A1'] = "TEST"
 # ws.title = 'TEST'
 
 # Save the file
-wb.save(filedialog.asksaveasfilename(initialfile='test', title="Save file", initialdir=os.getcwd(), filetypes=(*SUPPORTED_FORMATS, ('All files', '*')), defaultextension=True))
+
+
+sheet = pandas.read_excel(r'C:\Users\Егор\Desktop\testxls.xls')
+
+
+
+
+# try:
+#     file = filedialog.asksaveasfilename(initialfile='name', title="Save file", initialdir=os.getcwd(), filetypes=(*SUPPORTED_FORMATS, ('All files', '*')), defaultextension=True)
+#     if not file:
+#         print(12313)
+# except FileNotFoundError:   
+#     print('123')
+
+
+# extansion = file[file.rfind('.'):]
+
+# match extansion:
+#     case '.xlsx':
+#         wb.save(file)
+
+#     case '.csv':
+#         with open(file, 'w') as csvfilewrite:
+#             writer = csv.writer(csvfilewrite, lineterminator="\r", delimiter = ";")
+            
+#             for i in OPENPX_EXCEL_TEMPLATE:
+#                 writer.writerow(i)
+
 
 
 

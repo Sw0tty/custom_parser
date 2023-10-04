@@ -77,7 +77,7 @@ class MasterExcel:
                     reader.append(data.copy())
                     data.clear()                  
             case _:
-                return None
+                return f'[{ERROR}] Unexpected extansion!'
         return reader
 
     @staticmethod
@@ -92,8 +92,38 @@ class MasterExcel:
                 return None
 
     @staticmethod
-    def _save_file(import_data, import_data_open):
+    def _save_file(import_data, import_data_open, file_extansion):
+        
+        file = asksaveasfilename(
+                    initialfile=DEFAULT_NAME_SAVE_FILE,
+                    title="Save file",
+                    initialdir=os.getcwd(),
+                    filetypes=(*SUPPORTED_FORMATS, ('All files', '*')),
+                    defaultextension=True
+                    )
+        
+        if not file:
+            return CANCELLED
 
+        match file_extansion(file):
+            case '.xlsx':
+                wb = Workbook()
+                ws = wb.active
+                ws.title = DEFAULT_NAME_SAVE_FILE
+
+                for row in import_data_open:
+                    ws.append(row)
+                wb.save(file)
+
+            case '.csv':
+                with open(file, 'w') as csvfilewrite:
+                    writer = csv.writer(csvfilewrite, lineterminator="\r", delimiter = ";")
+                    
+                    for i in import_data_open:
+                        writer.writerow(i)
+            case _:
+                return f'[{ERROR}] Unexpected extansion!'
+        return FILE_CREATED
         # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
 
         # if not path_dir:
@@ -101,12 +131,7 @@ class MasterExcel:
 
         # chdir(path_dir)
 
-        wb = Workbook()
-        ws = wb.active
-        ws.title = DEFAULT_NAME_SAVE_FILE
-
-        for row in import_data_open:
-            ws.append(row)
+        
 
         # if DEFAULT_NAME_SAVE_FILE in [file_name[:file_name.rfind('.')] for file_name in listdir()]:
         #     answer = input(f"""[{WARNING}] File already exist. Overwrite file? 'Yes' to accept. """ +
@@ -130,19 +155,19 @@ class MasterExcel:
         #         case _:
         #             return CANCELLED
         
-        try:
-            wb.save(
-                asksaveasfilename(
-                    initialfile=DEFAULT_NAME_SAVE_FILE,
-                    title="Save file",
-                    initialdir=os.getcwd(),
-                    filetypes=(SUPPORTED_FORMATS[1], ('All files', '*')),
-                    defaultextension=True
-                    )
-            )
-            return FILE_CREATED
-        except FileNotFoundError:
-            return CANCELLED
+        # try:
+        #     wb.save(
+        #         asksaveasfilename(
+        #             initialfile=DEFAULT_NAME_SAVE_FILE,
+        #             title="Save file",
+        #             initialdir=os.getcwd(),
+        #             filetypes=(SUPPORTED_FORMATS[1], ('All files', '*')),
+        #             defaultextension=True
+        #             )
+        #     )
+        #     return FILE_CREATED
+        # except FileNotFoundError:
+        #     return CANCELLED
         
         
 
