@@ -4,6 +4,9 @@ import os
 import csv
 from tkinter import filedialog
 import pandas
+import requests
+from bs4 import BeautifulSoup as bs
+
 
 SUPPORTED_FORMATS = [('CSV file', '*.csv'), ('Excel book', '*.xlsx'), ]
 
@@ -58,6 +61,27 @@ a.a_param = 45
 
 print(a.a_param)
 
+
+url = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?morphology=on&search-filter=Дате+размещения&pageNumber=1&sortDirection=false&recordsPerPage=_10&showLotsInfoHidden=false&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&priceFromGeneral=5000000&currencyIdGeneral=-1&publishDateFrom=03.10.2023&publishDateTo=05.10.2023'
+
+response = requests.get(url, headers= {
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
+})
+html = response.text
+ 
+soup = bs(html, 'html.parser')
+ 
+pagination = soup.find('div', class_='paginator-block')
+pages = pagination.find_all('span', class_='link-text')
+
+if pages:
+
+
+    print(pages[-1].text)
+
+# for page in pages:
+
+#     print(page)
 
 # try:
 #     file = filedialog.asksaveasfilename(initialfile='name', title="Save file", initialdir=os.getcwd(), filetypes=(*SUPPORTED_FORMATS, ('All files', '*')), defaultextension=True)

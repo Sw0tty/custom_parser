@@ -9,9 +9,10 @@ from app_config.app_notices import RESET_MODULE, INFO, HELP
 from app_config.help_commands import MAIN_COMMANDS_DICT, MODULES, REBUILDER_COMMANDS_DICT,\
     FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
 from classes.parent import MasterExcel
+from classes.modules_default import MainMethods
 
 
-master_excel = MasterExcel(MAIN_COMMANDS_DICT)
+master_excel = MainMethods(MAIN_COMMANDS_DICT)
 file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
 site_parser = SiteParser(SITE_PARSER_COMMANDS_DICT)
 rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)

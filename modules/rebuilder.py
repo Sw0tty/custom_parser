@@ -15,12 +15,13 @@ from tkinter.filedialog import askopenfilename, askdirectory
 from tkinter import messagebox
 
 from classes.mas_parser import MasterExcel
+from classes.modules_default import MainMethods
 from modules.parser.site_parser import URL_TEMPLATE
 from app_config.settings import ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler, SUPPORTED_FORMATS
 from app_config.app_notices import ERROR, SUCCESS, INFO, WARNING, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, APPLY_STRING
 
 
-class Rebuilder(MasterExcel):
+class Rebuilder(MainMethods, MasterExcel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

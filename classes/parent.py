@@ -22,10 +22,6 @@ class MasterExcel:
         self.__commands = commands
         self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
 
-    def help(self):
-        for key in self.__commands.keys():
-            print(f'\t{key} - {self.__commands[key]}')
-
     def reset_export_data(self, reset=False):        
         self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
         return f'[{SUCCESS}] Data reset!'

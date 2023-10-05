@@ -11,6 +11,7 @@ from os.path import basename
 from colorama import init
 from bs4 import BeautifulSoup as bS
 from classes.parent import MasterExcel
+from classes.modules_default import MainMethods
 from tkinter.filedialog import askopenfilename, askdirectory
 from app_config.settings import price_styler, MAIN_PARSER_BLOCK
 from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, INFO, APPLY_STRING
@@ -18,7 +19,7 @@ from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PA
 init()
 
 
-class FileParser(MasterExcel):
+class FileParser(MainMethods, MasterExcel):
 
     SEARCHING_INFO = None
 
@@ -73,9 +74,8 @@ class FileParser(MasterExcel):
         with open(self.__file_path, 'r', encoding='utf-8') as open_file:
             self.SEARCHING_INFO = bS(open_file.read(), 'lxml')
         
-        self.parse_info()
-
-        # ----
+        self.LIST_PARSE_OBJECTS = \
+            self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
 
         values_list = []
 
@@ -116,10 +116,6 @@ class FileParser(MasterExcel):
         self.__ready_to_export = True
         
         return f'[{SUCCESS}] File ready to export'
-
-    def parse_info(self):
-        self.LIST_PARSE_OBJECTS = \
-            self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
 
     def file_ready(self):
         if self.__ready_to_export:
