@@ -126,4 +126,4 @@ class FileParser(MainMethods, MasterExcel):
         if not self.SEARCHING_INFO:
             return self.get_file_path()
 
-        return self._save_file(self.EXPORT_DATA, self.get_file_extansion)
+        return self._save_as_file(self.EXPORT_DATA, self.get_file_extansion)

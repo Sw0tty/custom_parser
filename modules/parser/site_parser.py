@@ -2,20 +2,16 @@
 !!!-IN PROCESS-!!!
 """
 import requests
-from bs4 import BeautifulSoup as bS
+from bs4 import BeautifulSoup as bs
 from time import sleep
 from classes.parent import MasterExcel
 
-import os
-import pyexcel
 import datetime
-import pyexcel_xls  # For excel module!
-from pyexcel_io import writers  # For excel module!
 from time import sleep
 from colorama import init
 from copy import deepcopy
 from tkinter.filedialog import askopenfilename, askdirectory
-from app_config.settings import TODAY_DATE, EXCEL_TEMPLATE, PARSER_DIVS_DICT
+from app_config.settings import TODAY_DATE, EXCEL_TEMPLATE, PARSER_DIVS_DICT, PARSER_HEADERS
 from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_CREATED
 from bs4 import BeautifulSoup as bs
 
@@ -50,8 +46,8 @@ class SiteParser(MainMethods, MasterExcel):
     def get_url(self):
         return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhString={self.__SEARCH}morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={self.__RESULTS_PER_PAGE}&recordsPerPage=_{self.__PAGE_NUMBER}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
 
-    def pars_url(self, search_str, page):
-        return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhString={search_str}morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={self.__RESULTS_PER_PAGE}&recordsPerPage=_{page}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
+    def get_custom_url(self, search_str):
+        return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhString={search_str}morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={self.__RESULTS_PER_PAGE}&recordsPerPage=_{self.__PAGE_NUMBER}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
 
     def get_search_string(self):
         return self.__SEARCH
@@ -64,20 +60,47 @@ class SiteParser(MainMethods, MasterExcel):
     
     @staticmethod
     def check_paginate(url):
-        response = requests.get(url, headers= {
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
-        })
+        response = requests.get(url, headers=PARSER_HEADERS)
         
         soup = bs(response.text, 'html.parser')
         pagination = soup.find('div', class_='paginator-block')
         pages = pagination.find_all('span', class_='link-text')
 
         if pages:
-            return pages[-1].text
+            return soup, pages[-1].text
+        return soup
 
-    def parse_results(self):
+    def parse_site(self):
+
+        answer = input("""Print 'default' to parse default settings. 'search' to set search string.\nAnswer: """)
+
+        if answer == 'default':
+            url = self.get_url()
+        elif answer == 'search':
+            search_str = input("What's searching?\nAnswer: ")
+            if search_str:
+                url = self.get_custom_url(search_str)
+            else:
+                return CANCELLED
+        else:
+            return CANCELLED
+        
+        parse_result = self.check_paginate(url)
+
+        if isinstance(parse_result, bs):
+            return parse_result(parse_result)
+
+        if isinstance(parse_result, tuple):
+            return self.parse_paginate(*parse_result)
+
+        return f'[{ERROR}] Connection failed!'
+    
+    def parse_page(self):
         pass
 
+    def parse_paginate(self, soup, max_pages):
+        pass
+    
     # def page(self, page_num):
     #     self.__PAGE_NUMBER = page_num
     #     return self.page

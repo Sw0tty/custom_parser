@@ -86,39 +86,41 @@ class MasterExcel:
             case _:
                 return None
 
-    @staticmethod
-    def _save_file(import_data, file_extansion):
+    # @staticmethod
+    # def _save_file(import_data, file_extansion):
         
-        file = asksaveasfilename(
-                    initialfile=DEFAULT_NAME_SAVE_FILE,
-                    title="Save file",
-                    initialdir=os.getcwd(),
-                    filetypes=(*SUPPORTED_FORMATS, ('All files', '*')),
-                    defaultextension=True
-                    )
+    #     file = asksaveasfilename(
+    #                 initialfile=DEFAULT_NAME_SAVE_FILE,
+    #                 title="Save file",
+    #                 initialdir=os.getcwd(),
+    #                 filetypes=(*SUPPORTED_FORMATS, ('All files', '*')),
+    #                 defaultextension=True
+    #                 )
         
-        if not file:
-            return CANCELLED
+    #     if not file:
+    #         return CANCELLED
 
-        match file_extansion(file):
-            case '.xlsx':
-                wb = Workbook()
-                ws = wb.active
-                ws.title = DEFAULT_NAME_SAVE_FILE
+    #     match file_extansion(file):
+    #         case '.xlsx':
+    #             wb = Workbook()
+    #             ws = wb.active
+    #             ws.title = DEFAULT_NAME_SAVE_FILE
 
-                for row in import_data:
-                    ws.append(row)
-                wb.save(file)
+    #             for row in import_data:
+    #                 ws.append(row)
+    #             wb.save(file)
 
-            case '.csv':
-                with open(file, 'w') as csvfilewrite:
-                    writer = csv.writer(csvfilewrite, lineterminator="\r", delimiter = ";")
+    #         case '.csv':
+    #             with open(file, 'w') as csvfilewrite:
+    #                 writer = csv.writer(csvfilewrite, lineterminator="\r", delimiter = ";")
                     
-                    for i in import_data:
-                        writer.writerow(i)
-            case _:
-                return f'[{ERROR}] Unexpected extansion!'
-        return FILE_CREATED
+    #                 for i in import_data:
+    #                     writer.writerow(i)
+    #         case _:
+    #             return f'[{ERROR}] Unexpected extansion!'
+    #     return FILE_CREATED
+
+    
         # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
 
         # if not path_dir:

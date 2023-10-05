@@ -171,7 +171,7 @@ class Rebuilder(MainMethods, MasterExcel):
         if not self.__already_rebuild:
             return self.get_rebuild_status()
 
-        return self._save_file(self.EXPORT_DATA, self.get_file_extansion)
+        return self._save_as_file(self.EXPORT_DATA, self.get_file_extansion)
 
         # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
         #
