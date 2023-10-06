@@ -18,9 +18,11 @@ from openpyxl import Workbook
 
 class MasterExcel:
 
-    def __init__(self, commands: dict):
-        self.__commands = commands
-        self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
+    EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
+
+    # def __init__(self):
+    #     # self.__commands = commands
+    #     self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
 
     def reset_export_data(self, reset=False):        
         self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)

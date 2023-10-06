@@ -12,16 +12,16 @@ from classes.parent import MasterExcel
 from classes.modules_default import MainMethods
 
 
-master_excel = MainMethods(MAIN_COMMANDS_DICT)
+master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
 file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
-site_parser = SiteParser(SITE_PARSER_COMMANDS_DICT)
+site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT)
 rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
 
-print(master_excel.EXPORT_DATA)
 print(rebuilder.EXPORT_DATA)
+# print(rebuilder.EXPORT_DATA)
 
-rebuilder.EXPORT_DATA.append([2, 3, 4])
-print(file_parser.EXPORT_DATA)
+# rebuilder.EXPORT_DATA.append([2, 3, 4])
+# print(file_parser.EXPORT_DATA)
 
 print(f"""[{INFO}] Print {HELP} for call list commands.""")
 
@@ -74,12 +74,14 @@ while True:
         match input_command:
             case '1':
                 site_parser.help()
-            # case '2':
-            #     print(site_parser.set_file_path())
+            case '2':
+                print(site_parser.parse_site())
             # case '3':
             #     print(site_parser.get_file_path())
-            # case '4':
-            #     print(site_parser.get_file_name())
+            case '4':
+                print(site_parser.excel_export())
+            case '5':
+                print(site_parser.get_url())
 
     elif CURRENT_MODULE == 'rebuilder':
         match input_command:

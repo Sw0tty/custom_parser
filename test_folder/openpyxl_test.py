@@ -44,6 +44,7 @@ class A:
 
     def __init__(self, vla) -> None:
         self.a_param = vla
+        self.adad = 1
     
     @property
     def a_param(self):
@@ -57,9 +58,15 @@ class A:
         if new == 1:
             return 1
         
+class B(A):
+
+    def __init__(self, vla) -> None:
+        super().__init__(vla)
 
 a = A(1)
+b = B(123)
 
+print(b.adad)
 # print(a.a_param)
 
 # a.a_param = 45

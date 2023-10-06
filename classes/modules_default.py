@@ -3,7 +3,7 @@
 import os
 import csv
 
-from openpyexcel import Workbook
+from openpyxl import Workbook
 from tkinter.filedialog import asksaveasfilename
 from app_config.settings import DEFAULT_NAME_SAVE_FILE, SUPPORTED_FORMATS
 from app_config.app_notices import CANCELLED, ERROR, FILE_CREATED

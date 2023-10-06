@@ -34,8 +34,29 @@ EXCEL_TEMPLATE = [
 # Main site block with parsing info
 MAIN_PARSER_BLOCK = "search-registry-entry-block box-shadow-search-input"
 
+SITE_BLOCK = {
+    "search-registry-entry-block box-shadow-search-input": 
+        {
+            'purchases': 'col-9 p-0 registry-entry__header-top__title text-truncate',
+            'name': 'registry-entry__body-value',
+            'price': 'price-block__value',
+            'customer': 'registry-entry__body-href',
+            'end_date': 'data-block mt-auto',
+            'org_href': 'registry-entry__header-mid__number',
+        }
+}
+
 # Classes in main parsing block
 PARSER_DIVS_DICT = {
+    'purchases': 'col-9 p-0 registry-entry__header-top__title text-truncate',
+    'name': 'registry-entry__body-value',
+    'price': 'price-block__value',
+    'customer': 'registry-entry__body-href',
+    'end_date': 'data-block mt-auto',
+    'org_href': 'registry-entry__header-mid__number',
+}
+
+PARSER_DIVS_DICT_OLD = {
     'purchases': ('col-9 p-0 registry-entry__header-top__title text-truncate', 'Закупки по: '),
     'name': ('registry-entry__body-value', 'Наименование закупки: '),
     'price': ('price-block__value', 'Цена: '),

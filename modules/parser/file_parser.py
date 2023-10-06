@@ -82,7 +82,7 @@ class FileParser(MainMethods, MasterExcel):
         for parse_obj in self.LIST_PARSE_OBJECTS:
             values_list.clear()
             for class_key in div_dict.keys():
-                _ = parse_obj.find('div', class_=div_dict[class_key][0])
+                _ = parse_obj.find('div', class_=div_dict[class_key])
                 if _ is None:
                     _ = '--None value--'
                 else:
