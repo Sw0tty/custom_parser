@@ -31,9 +31,6 @@ DATE_DAYS_AGO = (datetime.datetime.now() - datetime.timedelta(days=DAYS_AGO)).st
 MAIN_URL = f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhString={SEARCH}morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={DEFAULT_PAGE_NUMBER}&recordsPerPage=_{DEFAULT_RESULTS}&fz44=on&fz223=on&af=on&priceFromGeneral={DEFAULT_PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
 
 
-
-try_count = 0
-
 class SiteParser(MainMethods, MasterExcel):
     
     def __init__(self, **kwargs):
@@ -43,28 +40,14 @@ class SiteParser(MainMethods, MasterExcel):
         self.__PAGE_NUMBER = DEFAULT_PAGE_NUMBER
         self.__PRICE = DEFAULT_PRICE
 
-    def get_url(self):
-        return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString={self.__SEARCH}&morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={self.__PAGE_NUMBER}&recordsPerPage=_{self.__RESULTS_PER_PAGE}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
-
-    def get_custom_url(self, search_str, page=1):
-        return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString={search_str}&morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={page}&recordsPerPage=_{self.__RESULTS_PER_PAGE}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
-
-    def get_search_string(self):
-        return self.__SEARCH
-    
-    def set_search_string(self):
-        return 1
- 
-    def get_page(self):
-        return self.__PAGE_NUMBER
-    
     @staticmethod
     def check_url_info(url):
 
         response = requests.get(url, headers=PARSER_HEADERS)
-        
+        print(response.status_code)
         soup = bs(response.text, 'html.parser')
         main_info_block = soup.find('div', class_=MAIN_PARSER_BLOCK)
+        print(main_info_block)
         if not main_info_block:
             return
         pagination = soup.find('div', class_='paginator-block')
@@ -74,11 +57,39 @@ class SiteParser(MainMethods, MasterExcel):
             return soup, int(pages[-1].text)
         return soup
     
+    @property
+    def searching_string(self):
+        return self.__SEARCH
+    
+    @searching_string.setter
+    def searching_string(self, string):
+        self.__SEARCH = string
+    
+    @searching_string.deleter
+    def searching_string(self):
+        self.__SEARCH = ''
+    
+    def get_url(self):
+        return 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString=0320100011223000238&morphology=on&search-filter=Дате+размещения&pageNumber=1&sortDirection=false&recordsPerPage=_10&showLotsInfoHidden=false&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&ca=on&pc=on&pa=on&currencyIdGeneral=-1'
+        # return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString=&morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={self.__PAGE_NUMBER}&recordsPerPage=_{self.__RESULTS_PER_PAGE}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
+
+    def get_custom_url(self, search_str, page=1):
+        return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString={search_str}&morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={page}&recordsPerPage=_{self.__RESULTS_PER_PAGE}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
+
+    def get_search_string(self):
+        return self.__SEARCH
+    
+    # def set_search_string(self):
+    #     return 1
+ 
+    # def get_page(self):
+    #     return self.__PAGE_NUMBER 
+    
     def excel_export(self):
         # if not self.SEARCHING_INFO:
         #     return self.get_file_path()
 
-        return self._save_as_file(self.EXPORT_DATA, self.get_file_extansion)
+        return self._save_as_file(self.EXPORT_DATA, self.get_file_extension)
 
     def parse_site(self):
 
@@ -87,10 +98,10 @@ class SiteParser(MainMethods, MasterExcel):
         if answer == 'default':
             url = self.get_url()
         elif answer == 'search':
-            search_str = input("What's searching?\nAnswer: ")
+            search_str = input("What's searching?\nAnswer: ").strip()
             if search_str:
-                self.__SEARCH = search_str
-                url = self.get_custom_url(search_str)
+                self.searching_string = search_str
+                url = self.get_custom_url(self.searching_string)
             else:
                 return CANCELLED
         else:
@@ -108,6 +119,7 @@ class SiteParser(MainMethods, MasterExcel):
     
     def parse_page(self, soup):
         self.block_parser(soup)
+        del self.searching_string
         return f'[{SUCCESS}] File ready to export'
 
     def parse_paginate(self, soup, max_pages):
@@ -116,20 +128,10 @@ class SiteParser(MainMethods, MasterExcel):
             response = requests.get(self.get_custom_url(search_str=self.__SEARCH, page=page), headers=PARSER_HEADERS)       
             soup = bs(response.text, 'html.parser')
             self.block_parser(soup)
+        del self.searching_string
         return f'[{SUCCESS}] File ready to export'
 
     def block_parser(self, soup):
-
-        # if not self.__file_path:
-        #     return self.get_file_name()
-
-        # if self.__ready_to_export:
-        #     answer = input(APPLY_STRING)
-        #     if answer != 'Yes':
-        #         return CANCELLED
-        #     self.reset_export_data()
-
-
         
         LIST_PARSE_OBJECTS = soup.find_all('div', class_=MAIN_PARSER_BLOCK)
 
@@ -139,6 +141,9 @@ class SiteParser(MainMethods, MasterExcel):
             values_list.clear()
             for class_key in PARSER_DIVS_DICT.keys():
                 _ = parse_obj.find('div', class_=PARSER_DIVS_DICT[class_key])
+
+
+                # ----
                 if _ is None:
                     _ = '--None value--'
                 else:
@@ -162,6 +167,7 @@ class SiteParser(MainMethods, MasterExcel):
                         children = _.findChildren('a')
                         children = children[0].get('href')
                         _ = f'https://zakupki.gov.ru{children}'
+                # ----
 
                 values_list.append(_)
 

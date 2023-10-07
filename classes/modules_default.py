@@ -20,7 +20,7 @@ class MainMethods:
             print(f'\t{key} - {self.__commands[key]}')
 
     @staticmethod
-    def _save_as_file(import_data, file_extansion):
+    def _save_as_file(import_data: list, file_extension: str) -> str:
         
         file = asksaveasfilename(
                     initialfile=DEFAULT_NAME_SAVE_FILE,
@@ -33,23 +33,23 @@ class MainMethods:
         if not file:
             return CANCELLED
 
-        match file_extansion(file):
+        match file_extension(file):
             case '.xlsx':
-                wb = Workbook()
-                ws = wb.active
-                ws.title = DEFAULT_NAME_SAVE_FILE
+                work_book = Workbook()
+                work_sheet = work_book.active
+                work_sheet.title = DEFAULT_NAME_SAVE_FILE
 
                 for row in import_data:
-                    ws.append(row)
-                wb.save(file)
+                    work_sheet.append(row)
+                work_book.save(file)
 
             case '.csv':
-                with open(file, 'w') as csvfilewrite:
-                    writer = csv.writer(csvfilewrite, lineterminator="\r", delimiter = ";")
+                with open(file, 'w') as csv_file:
+                    csv_writer = csv.writer(csv_file, lineterminator="\r", delimiter = ";")
                     
-                    for i in import_data:
-                        writer.writerow(i)
+                    for row in import_data:
+                        csv_writer.writerow(row)
             case _:
-                return f'[{ERROR}] Unexpected extansion!'
+                return f'[{ERROR}] Unexpected extension!'
         return FILE_CREATED
     

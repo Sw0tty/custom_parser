@@ -43,12 +43,12 @@ class MasterExcel:
                     return CANCELLED                
 
     @staticmethod
-    def get_file_extansion(file_name: str) -> str:
+    def get_file_extension(file_name: str) -> str:
         return file_name[file_name.rfind('.'):]
 
     @staticmethod
-    def _file_reader(file_extansion, file_path) -> list:
-        match file_extansion:
+    def _file_reader(file_extension, file_path) -> list:
+        match file_extension:
             case '.csv':
                 with open(file_path, 'r') as csvfile:
                     reader = [*csv.reader(csvfile, delimiter=';')]
@@ -74,7 +74,7 @@ class MasterExcel:
                     reader.append(data.copy())
                     data.clear()                  
             case _:
-                return f'[{ERROR}] Unexpected extansion!'
+                return f'[{ERROR}] Unexpected extension!'
         return reader
 
     @staticmethod
@@ -89,7 +89,7 @@ class MasterExcel:
                 return None
 
     # @staticmethod
-    # def _save_file(import_data, file_extansion):
+    # def _save_file(import_data, file_extension):
         
     #     file = asksaveasfilename(
     #                 initialfile=DEFAULT_NAME_SAVE_FILE,
@@ -102,7 +102,7 @@ class MasterExcel:
     #     if not file:
     #         return CANCELLED
 
-    #     match file_extansion(file):
+    #     match file_extension(file):
     #         case '.xlsx':
     #             wb = Workbook()
     #             ws = wb.active

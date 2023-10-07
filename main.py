@@ -4,20 +4,20 @@ Main File MasterExcel
 from modules.parser.file_parser import FileParser
 from modules.parser.site_parser import SiteParser
 from modules.rebuilder import Rebuilder
-from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, CURRENT_MODULE, module_styler
+from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, CURRENT_MODULE
 from app_config.app_notices import RESET_MODULE, INFO, HELP
 from app_config.help_commands import MAIN_COMMANDS_DICT, MODULES, REBUILDER_COMMANDS_DICT,\
     FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
 from classes.parent import MasterExcel
 from classes.modules_default import MainMethods
+from app_config.initialization_file import master_excel, file_parser, site_parser, rebuilder, styler
 
+# master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
+# file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
+# site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT)
+# rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
 
-master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
-file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
-site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT)
-rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
-
-print(rebuilder.EXPORT_DATA)
+# print(rebuilder.EXPORT_DATA)
 # print(rebuilder.EXPORT_DATA)
 
 # rebuilder.EXPORT_DATA.append([2, 3, 4])
@@ -29,13 +29,13 @@ print(f"""[{INFO}] Print {HELP} for call list commands.""")
 def reset_module():
     print("All modules:")
     for module in MODULES.keys():
-        print(f'\t{module_styler(module)} - {MODULES[module]}')
+        print(f'\t{styler.module_styler(module)} - {MODULES[module]}')
     return input('Print module: ').strip().lower()
 
 
 while True:
 
-    input_command = input(f"{NAME}({module_styler(CURRENT_MODULE)}){MASTER_CMD_INPUT} ")
+    input_command = input(f"{NAME}({styler.module_styler(CURRENT_MODULE)}){MASTER_CMD_INPUT} ")
 
     match input_command:
         case 'help':
@@ -99,5 +99,3 @@ while True:
                 print(rebuilder.prepare_rebuild())
             case '7':
                 print(rebuilder.excel_export())
-
-

@@ -1,5 +1,4 @@
 from datetime import date
-from colorama import Fore, Style
 
 
 TODAY_DATE = date.today().strftime('%d.%m.%Y')
@@ -41,7 +40,7 @@ SITE_BLOCK = {
             'name': 'registry-entry__body-value',
             'price': 'price-block__value',
             'customer': 'registry-entry__body-href',
-            'end_date': 'data-block mt-auto',
+            'end_date': 'data-block mt-auto',  # 'data-block mt-auto': styler - ''
             'org_href': 'registry-entry__header-mid__number',
         }
 }
@@ -66,13 +65,6 @@ PARSER_DIVS_DICT_OLD = {
 }
 
 ZAK_44 = 'https://zakupki.gov.ru/epz/order/notice/ea20/view/common-info.html?regNumber='
-
-
-# Style the current selected module
-def module_styler(module):
-    if module == CURRENT_MODULE:
-        return Fore.RED + module + Style.RESET_ALL
-    return Fore.MAGENTA + module + Style.RESET_ALL
 
 
 # Style the price value

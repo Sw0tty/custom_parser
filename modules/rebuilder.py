@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup as bS
 from tkinter.filedialog import askopenfilename, askdirectory
 from tkinter import messagebox
 
-from classes.mas_parser import MasterExcel
+from classes.parent import MasterExcel
 from classes.modules_default import MainMethods
 from modules.parser.site_parser import URL_TEMPLATE
 from app_config.settings import ZAK_44, PARSER_HEADERS, MAIN_PARSER_BLOCK, PARSER_DIVS_DICT, price_styler, SUPPORTED_FORMATS
@@ -30,7 +30,7 @@ class Rebuilder(MainMethods, MasterExcel):
         self.__already_rebuild = False
 
     def get_params_status(self):
-        return messagebox.showinfo(title='Parametrs status',
+        return messagebox.showinfo(title='Parameters status',
                                    message=f'File path: {self.get_selected_file_path()}\nFile name: {self.get_selected_file_path()}')
 
     def get_file_name(self):
@@ -123,10 +123,10 @@ class Rebuilder(MainMethods, MasterExcel):
 
         # return self.get_rebuild_status(True)
 
-        reader = self._file_reader(self.get_file_extansion(self.__file_name), self.__file_path)
+        reader = self._file_reader(self.get_file_extension(self.__file_name), self.__file_path)
 
         if reader is None:
-            return f'[{ERROR}] Extansion error!'
+            return f'[{ERROR}] Extension error!'
             
         cut_first_row = 1 if columns_name else 0
 
@@ -171,7 +171,7 @@ class Rebuilder(MainMethods, MasterExcel):
         if not self.__already_rebuild:
             return self.get_rebuild_status()
 
-        return self._save_as_file(self.EXPORT_DATA, self.get_file_extansion)
+        return self._save_as_file(self.EXPORT_DATA, self.get_file_extension)
 
         # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
         #

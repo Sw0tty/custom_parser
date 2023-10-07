@@ -39,6 +39,12 @@ ws['A1'] = "TEST"
 
 
 # sheet = pandas.read_excel(r'C:\Users\Егор\Desktop\testxls.xls')
+from pprint import pprint
+import sys
+# sys.path.append(f'D:\\PyProjects\\custom_parser')
+# from app_config import settings
+# print(settings.CURRENT_MODULE)
+pprint(sys.path)
 
 class A:
 
@@ -47,56 +53,57 @@ class A:
         self.adad = 1
     
     @property
-    def a_param(self):
-        return self.a
+    def a_param_get(self):
+        return self.a_param
     
-    @a_param.setter
-    def a_param(self, new):
-        self.a = new
+    @a_param_get.setter
+    def a_param_get(self, new):
+        self.a_param = new
+
+    @a_param_get.deleter
+    def a_param_get(self):
+        print(123)
+        self.a_param = f'fdf{None}'
 
     def fff(self, new):
         if new == 1:
             return 1
         
-class B(A):
-
-    def __init__(self, vla) -> None:
-        super().__init__(vla)
 
 a = A(1)
-b = B(123)
-
-print(b.adad)
+print(a.a_param_get)
+del a.a_param_get
+print(a.a_param_get)
 # print(a.a_param)
 
 # a.a_param = 45
 
 # print(a.a_param)
 
-print(bool(a.fff(8)))
+# print(bool(a.fff(8)))
 
 
-url = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?morphology=on&search-filter=Дате+размещения&pageNumber=1&sortDirection=false&recordsPerPage=_10&showLotsInfoHidden=false&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&priceFromGeneral=5000000&currencyIdGeneral=-1&publishDateFrom=03.10.2023&publishDateTo=05.10.2023'
+# url = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?morphology=on&search-filter=Дате+размещения&pageNumber=1&sortDirection=false&recordsPerPage=_10&showLotsInfoHidden=false&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&priceFromGeneral=5000000&currencyIdGeneral=-1&publishDateFrom=03.10.2023&publishDateTo=05.10.2023'
 
-response = requests.get(url, headers= {
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
-})
-html = response.text
+# response = requests.get(url, headers= {
+#     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
+# })
+# html = response.text
  
-soup = bs(html, 'html.parser')
+# soup = bs(html, 'html.parser')
 
-print(type(soup))
+# print(type(soup))
 
-if isinstance(soup, bs):
-    print(1)
+# if isinstance(soup, bs):
+#     print(1)
 
-pagination = soup.find('div', class_='paginator-block')
-pages = pagination.find_all('span', class_='link-text')
+# pagination = soup.find('div', class_='paginator-block')
+# pages = pagination.find_all('span', class_='link-text')
 
-if pages:
+# if pages:
 
 
-    print(pages[-1].text)
+#     print(pages[-1].text)
 
 # for page in pages:
 
