@@ -16,10 +16,13 @@ from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_CREATED
 from bs4 import BeautifulSoup as bs
 
 from classes.modules_default import MainMethods
+# from app_config import initialization_file
+from classes.styler import Styler
 
 URL_TEMPLATE = f'''https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString='''
 
 init()
+
 DAYS_AGO = 2
 SEARCH = ''
 DEFAULT_RESULTS = 50
@@ -35,6 +38,7 @@ class SiteParser(MainMethods, MasterExcel):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.styler = Styler()
         self.__SEARCH = ''
         self.__RESULTS_PER_PAGE = 50
         self.__PAGE_NUMBER = DEFAULT_PAGE_NUMBER
@@ -44,10 +48,9 @@ class SiteParser(MainMethods, MasterExcel):
     def check_url_info(url):
 
         response = requests.get(url, headers=PARSER_HEADERS)
-        print(response.status_code)
         soup = bs(response.text, 'html.parser')
         main_info_block = soup.find('div', class_=MAIN_PARSER_BLOCK)
-        print(main_info_block)
+
         if not main_info_block:
             return
         pagination = soup.find('div', class_='paginator-block')
@@ -152,7 +155,7 @@ class SiteParser(MainMethods, MasterExcel):
                         _ = _[:-1].rstrip() if class_key == 'price' else _
 
                     if class_key == 'purchases':
-                        _ = _[0:5] if _[0] == '4' else _[0:6]
+                        _ = self.styler.side_taker_styler(string=_, side='left')
 
                     if class_key == 'end_date':
                         _ = _.findChildren('div', class_='data-block__value', recursive=False)
@@ -171,10 +174,4 @@ class SiteParser(MainMethods, MasterExcel):
 
                 values_list.append(_)
 
-
             self.EXPORT_DATA.append(values_list.copy())
-
-        
-        
-    
-

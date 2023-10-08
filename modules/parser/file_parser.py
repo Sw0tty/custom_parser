@@ -5,9 +5,6 @@ Parse the HTML files.
 """
 from os import getcwd, chdir
 from os.path import basename
-# import pyexcel
-# import pyexcel_xls  # For excel module!
-# from pyexcel_io import writers  # For excel module!
 from colorama import init
 from bs4 import BeautifulSoup as bS
 from classes.parent import MasterExcel
@@ -108,7 +105,6 @@ class FileParser(MainMethods, MasterExcel):
 
                 values_list.append(_)
 
-            # self.EXPORT_DATA[next(iter(self.EXPORT_DATA))].append(values_list.copy())
             self.EXPORT_DATA.append(values_list.copy())
 
         # ----

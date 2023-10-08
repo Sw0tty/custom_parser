@@ -1,21 +1,23 @@
 """
 Main File MasterExcel
 """
-from modules.parser.file_parser import FileParser
-from modules.parser.site_parser import SiteParser
-from modules.rebuilder import Rebuilder
+
 from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, CURRENT_MODULE
 from app_config.app_notices import RESET_MODULE, INFO, HELP
 from app_config.help_commands import MAIN_COMMANDS_DICT, MODULES, REBUILDER_COMMANDS_DICT,\
     FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
-from classes.parent import MasterExcel
 from classes.modules_default import MainMethods
-from app_config.initialization_file import master_excel, file_parser, site_parser, rebuilder, styler
+from modules.parser.file_parser import FileParser
+from modules.parser.site_parser import SiteParser
+from modules.rebuilder import Rebuilder
+from classes.styler import Styler
 
-# master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
-# file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
-# site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT)
-# rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
+
+master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
+file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
+site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT)
+rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
+styler = Styler()
 
 # print(rebuilder.EXPORT_DATA)
 # print(rebuilder.EXPORT_DATA)

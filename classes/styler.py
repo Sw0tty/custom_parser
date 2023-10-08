@@ -20,7 +20,7 @@ class Styler:
         return Fore.MAGENTA + module + Style.RESET_ALL
     
     @staticmethod
-    def taker_styler(string, side):
+    def side_taker_styler(string, side):
         """
         Return right or left taken string side.
         Delimiter is Upper letter in string

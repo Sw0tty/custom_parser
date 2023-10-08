@@ -3,10 +3,7 @@ Working with excel file for rebuild raw site information
 Support (*.csv, *.xlsx) format
 """
 import csv
-# import pyexcel
 import requests
-# import pyexcel_xls  # For excel module!
-# from pyexcel_io import writers  # For excel module!
 from time import sleep
 from os import getcwd, chdir
 from os.path import basename
@@ -84,45 +81,6 @@ class Rebuilder(MainMethods, MasterExcel):
                 return CANCELLED
             self.reset_export_data()
 
-        # print(self._check_export_data())
-
-        # with open(self.__file_path, 'r') as open_file:
-        #     open_file.readline()
-
-        #     while True:
-        #         values_list = open_file.readline().strip().split(';')
-
-        #         if len(values_list) <= 1:
-        #             break
-        #         replays_value = values_list.pop(1)[1:]
-        #         values_list[2] = price_styler(values_list[2])
-        #         values_list.append('')
-        #         values_list.append(3)
-
-        #         if '223' in values_list[0]:
-        #             for i in range(0, 4):
-        #                 connection = requests.get(URL_TEMPLATE + replays_value, headers=PARSER_HEADERS)
-        #                 sleep(2)
-
-        #                 if connection.status_code == 200:
-        #                     self.SEARCHING_INFO = bS(connection.text, "html.parser")
-        #                     list_parse_objects = self.SEARCHING_INFO.find_all('div', class_=MAIN_PARSER_BLOCK)
-
-        #                     for parse_obj in list_parse_objects:
-        #                         _ = parse_obj.find('div', class_=PARSER_DIVS_DICT['org_href'][0])
-        #                         children = _.findChildren('a')
-        #                         children = children[0].get('href')
-        #                         replays_value = f'https://zakupki.gov.ru{children}'
-        #                     break
-        #             values_list.append(replays_value)
-        #         else:
-        #             values_list.append(ZAK_44 + replays_value)
-        #         self.IMPORT_DATA[next(iter(self.IMPORT_DATA))].append(values_list.copy())
-
-        # self.__already_rebuild = True
-
-        # return self.get_rebuild_status(True)
-
         reader = self._file_reader(self.get_file_extension(self.__file_name), self.__file_path)
 
         if reader is None:
@@ -141,8 +99,7 @@ class Rebuilder(MainMethods, MasterExcel):
             if '223' in values_list[0]:
                 for i in range(0, 4):
                     response = requests.get(URL_TEMPLATE + replays_value, headers=PARSER_HEADERS)
-                    sleep(2)
-
+                    
                     if response.status_code == 200:
                         data = bS(response.text, "html.parser")
                         list_parse_objects = data.find_all('div', class_=MAIN_PARSER_BLOCK)
@@ -153,10 +110,10 @@ class Rebuilder(MainMethods, MasterExcel):
                             children = children[0].get('href')
                             replays_value = f'https://zakupki.gov.ru{children}'
                         break
+
                 values_list.append(replays_value)
             else:
                 values_list.append(ZAK_44 + replays_value)
-            # self.EXPORT_DATA[next(iter(self.EXPORT_DATA))].append(values_list.copy())
 
             self.EXPORT_DATA.append(values_list.copy())
 
@@ -172,35 +129,6 @@ class Rebuilder(MainMethods, MasterExcel):
             return self.get_rebuild_status()
 
         return self._save_as_file(self.EXPORT_DATA, self.get_file_extension)
-
-        # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
-        #
-        # if not path_dir:
-        #     return CANCELLED
-        #
-        # chdir(path_dir)
-        #
-        # if os.path.exists(f"Выгрузка {TODAY}.xls"):
-        #     answer = input(f"""[{WARNING}] File already exist. Overwrite file? 'Yes' to accept. """ +
-        #                    """'no' to save as copy name.\nAnswer: """)
-        #
-        #     match answer:
-        #         case 'Yes':
-        #             try:
-        #                 pyexcel.save_book_as(bookdict=self.IMPORT_DATA, dest_file_name=f"Выгрузка {TODAY}.xls")
-        #                 return f'[{SUCCESS}] File created!'
-        #             except PermissionError:
-        #                 return f'[{ERROR}] Overwritten file is open in another program!'
-        #         case 'no':
-        #             count_try = 1
-        #             while True:
-        #                 if not os.path.exists(f"Выгрузка {TODAY}({count_try}).xls"):
-        #                     pyexcel.save_book_as(bookdict=self.IMPORT_DATA,
-        #                                          dest_file_name=f"Выгрузка {TODAY}({count_try}).xls")
-        #                     return f'[{SUCCESS}] File created!'
-        #                 count_try += 1
-        #         case _:
-        #             return CANCELLED
 
 
 if __name__ == '__main__':

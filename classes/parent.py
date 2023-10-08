@@ -4,7 +4,6 @@ File with MasterExcel class
 import os
 from os import getcwd, chdir, listdir
 import xlrd
-# import pyexcel
 import openpyxl
 import csv
 from copy import deepcopy
@@ -53,7 +52,7 @@ class MasterExcel:
                 with open(file_path, 'r') as csvfile:
                     reader = [*csv.reader(csvfile, delimiter=';')]
             # case '.xls':
-            #     reader = pyexcel.get_array(file_path)
+
 
             #     reader = xlrd.open_workbook(r'C:\Users\Егор\Desktop\testxls.xls')
             #     sheet = reader.sheet_by_index(0)
@@ -87,114 +86,3 @@ class MasterExcel:
                 return False
             case _:
                 return None
-
-    # @staticmethod
-    # def _save_file(import_data, file_extension):
-        
-    #     file = asksaveasfilename(
-    #                 initialfile=DEFAULT_NAME_SAVE_FILE,
-    #                 title="Save file",
-    #                 initialdir=os.getcwd(),
-    #                 filetypes=(*SUPPORTED_FORMATS, ('All files', '*')),
-    #                 defaultextension=True
-    #                 )
-        
-    #     if not file:
-    #         return CANCELLED
-
-    #     match file_extension(file):
-    #         case '.xlsx':
-    #             wb = Workbook()
-    #             ws = wb.active
-    #             ws.title = DEFAULT_NAME_SAVE_FILE
-
-    #             for row in import_data:
-    #                 ws.append(row)
-    #             wb.save(file)
-
-    #         case '.csv':
-    #             with open(file, 'w') as csvfilewrite:
-    #                 writer = csv.writer(csvfilewrite, lineterminator="\r", delimiter = ";")
-                    
-    #                 for i in import_data:
-    #                     writer.writerow(i)
-    #         case _:
-    #             return f'[{ERROR}] Unexpected extansion!'
-    #     return FILE_CREATED
-
-    
-        # path_dir = askdirectory(initialdir=getcwd(), title="Save in...")
-
-        # if not path_dir:
-        #     return CANCELLED
-
-        # chdir(path_dir)
-
-        
-
-        # if DEFAULT_NAME_SAVE_FILE in [file_name[:file_name.rfind('.')] for file_name in listdir()]:
-        #     answer = input(f"""[{WARNING}] File already exist. Overwrite file? 'Yes' to accept. """ +
-        #                    """'no' to save as copy name.\nAnswer: """)
-
-        #     match answer:
-        #         case 'Yes':
-        #             try:
-        #                 pyexcel.save_book_as(bookdict=import_data, dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}.xls")
-        #                 return f'[{SUCCESS}] File created!'
-        #             except PermissionError:
-        #                 return f'[{ERROR}] Overwritten file is open in another program!'
-        #         case 'no':
-        #             count_try = 1
-        #             while True:
-        #                 if not os.path.exists(f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls"):
-        #                     pyexcel.save_book_as(bookdict=import_data,
-        #                                          dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}({count_try}).xls")
-        #                     return FILE_CREATED
-        #                 count_try += 1
-        #         case _:
-        #             return CANCELLED
-        
-        # try:
-        #     wb.save(
-        #         asksaveasfilename(
-        #             initialfile=DEFAULT_NAME_SAVE_FILE,
-        #             title="Save file",
-        #             initialdir=os.getcwd(),
-        #             filetypes=(SUPPORTED_FORMATS[1], ('All files', '*')),
-        #             defaultextension=True
-        #             )
-        #     )
-        #     return FILE_CREATED
-        # except FileNotFoundError:
-        #     return CANCELLED
-        
-        
-
-        # pyexcel.save_book_as(bookdict=import_data, dest_file_name=f"{DEFAULT_NAME_SAVE_FILE}.xls")
-
-        # 
-        # wb = Workbook()
-
-        # ws = wb.active
-        # ws.title = DEFAULT_NAME_SAVE_FILE
-
-        # for row in import_data_open:
-        #     ws.append(row)
-
-        # wb.save(f"{DEFAULT_NAME_SAVE_FILE}.xlsx")
-        # wb.save(f"{DEFAULT_NAME_SAVE_FILE}openpyxlxls.xls")
-        # 
-
-        
-
-    # def get_parser_type(self):
-    #     return f'[{INFO}] Now parser type is: {self.__parser_type}'
-
-    # def set_request_type(self):
-    #     while True:
-    #         print(f"[{INFO}]What's type a request?")
-    #         parser_type = input("File - parse file\nLink - parse link\nType: ").lower().strip()
-    #         if parser_type == 'file' or parser_type == 'link':
-    #             self.__parser_type = parser_type
-    #             return self.get_parser_type()
-    #         return f'[{ERROR}] Unexpected parser type!'
