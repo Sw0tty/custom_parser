@@ -1,4 +1,5 @@
 """
+Style console commands, parsing strings.
 """
 from colorama import Fore, Style
 
@@ -8,6 +9,10 @@ from classes.exceptions import TooManyArguments, UnexpectedSideParameter
 
 
 class Styler:
+
+    @staticmethod
+    def reset_all_styles():
+        print("\x1B[0m" + Fore.RESET, end='', flush=True)
 
     @staticmethod
     def module_styler(module):
@@ -85,6 +90,16 @@ class Styler:
             return new_price
         except TooManyArguments:
             return f'[{ERROR}] Too many given arguments to unpack (expected 1-2)'
+        
+    def console_user_input_styler(self, help_string):
+        answer = input(help_string + Fore.GREEN + "\x1B[3m")
+        self.reset_all_styles()
+        return answer
+    
+    def console_help_strings_styler(self, string):
+        style_string = Fore.GREEN + "\x1B[3m" + string
+        
+        return style_string
 
 if __name__ == '__main__':
     styler = Styler()
@@ -92,5 +107,5 @@ if __name__ == '__main__':
     vvv = 'fdfdf'
     string = '223-ФЗ Запрос котировок в электронной форме, участниками которого могут быть только субъекты малого и среднего предпринимательства'
     # print(styler.price_styler(value))
-    print(styler.taker_styler(string, side='left'))
+    print(styler.side_taker_styler(string, side='left'))
     print(vvv[0].isupper())

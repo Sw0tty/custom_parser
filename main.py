@@ -37,8 +37,9 @@ def reset_module():
 
 while True:
 
-    input_command = input(f"{NAME}({styler.module_styler(CURRENT_MODULE)}){MASTER_CMD_INPUT} ")
-
+    # input_command = input(f"{NAME}({styler.module_styler(CURRENT_MODULE)}){MASTER_CMD_INPUT} ")
+    input_command = styler.console_user_input_styler(f"{NAME}({styler.module_styler(CURRENT_MODULE)}){MASTER_CMD_INPUT} ")
+    
     match input_command:
         case 'help':
             master_excel.help()
