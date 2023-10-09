@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup as bs
 
 from classes.modules_default import MainMethods
 # from app_config import initialization_file
-from classes.styler import Styler
+# from classes.styler import Styler
 
 URL_TEMPLATE = f'''https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString='''
 
@@ -36,13 +36,14 @@ MAIN_URL = f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhS
 
 class SiteParser(MainMethods, MasterExcel):
     
-    def __init__(self, **kwargs):
+    def __init__(self, styler_class, **kwargs):
         super().__init__(**kwargs)
-        self.styler = Styler()
+        self.styler = styler_class
         self.__SEARCH = ''
         self.__RESULTS_PER_PAGE = 50
         self.__PAGE_NUMBER = DEFAULT_PAGE_NUMBER
         self.__PRICE = DEFAULT_PRICE
+        self.__request_results = 0
 
     @staticmethod
     def check_url_info(url):
@@ -60,6 +61,18 @@ class SiteParser(MainMethods, MasterExcel):
             return soup, int(pages[-1].text)
         return soup
     
+    @property
+    def request_results(self):
+        return self.__request_results
+    
+    @request_results.setter
+    def request_results(self):
+        self.__request_results += 1
+    
+    @request_results.deleter
+    def request_results(self):
+        self.__request_results = 0
+
     @property
     def searching_string(self):
         return self.__SEARCH
@@ -111,6 +124,10 @@ class SiteParser(MainMethods, MasterExcel):
             return CANCELLED
         
         parse_result = self.check_url_info(url)
+
+        if not parse_result:
+            del self.searching_string
+            return f'[{INFO}] For request {search_str} nothing found.'
 
         if isinstance(parse_result, bs):
             return self.parse_page(parse_result)

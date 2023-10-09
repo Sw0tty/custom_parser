@@ -35,7 +35,6 @@ class Styler:
                 for i in values[1:]:
                     if i[0].isupper():
                         middle.append(i)
-                        print(middle[-1])
                     else:
                         middle.append(f'{middle.pop(-1)} {i}')
 

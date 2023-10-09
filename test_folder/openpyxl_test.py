@@ -46,10 +46,19 @@ import sys
 # print(settings.CURRENT_MODULE)
 pprint(sys.path)
 
+class B:
+
+    def __init__(self) -> None:
+        self.aba = 1
+    
+    def get_aba(self):
+        return self.aba
+
 class A:
 
-    def __init__(self, vla) -> None:
+    def __init__(self, vla, b_class) -> None:
         self.a_param = vla
+        self.b_class = b_class
         self.adad = 1
     
     @property
@@ -70,11 +79,11 @@ class A:
             return 1
         
 
-a = A(1)
+a = A(1, B())
 print(a.a_param_get)
 del a.a_param_get
 print(a.a_param_get)
-# print(a.a_param)
+print(a.b_class.get_aba())
 
 # a.a_param = 45
 

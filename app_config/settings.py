@@ -45,6 +45,22 @@ SITE_BLOCK = {
         }
 }
 
+SITE_BLOCK_template = {
+    "SITE_NAME (main site name page)": 
+        {
+            'PARSING_PAGES':
+                {
+                    'PAGE(autonum)':
+                        {
+                            'PAGE_NAME': '',  # html title block name
+                            'MAIN_PARSE_INFO_BLOCK': '',  # main block with all infos about (INFO_BLOCKS)
+                            'INFO_BLOCKS': []
+                        }
+                },
+            'PAGINATOR_CLASS_NAME': '',  # Name of sita paginator
+        }
+}
+
 # Classes in main parsing block
 PARSER_DIVS_DICT = {
     'purchases': 'col-9 p-0 registry-entry__header-top__title text-truncate',
