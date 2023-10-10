@@ -106,6 +106,12 @@ class SiteParser(MainMethods, MasterExcel):
         #     return self.get_file_path()
 
         return self._save_as_file(self.EXPORT_DATA, self.get_file_extension)
+    
+    def add_info(self, common_title):
+        pass
+
+    def to_empty_list(self, columns_title, common_title):
+        pass
 
     def parse_site(self):
 
