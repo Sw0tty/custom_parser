@@ -65,9 +65,12 @@ class SiteParser(MainMethods, MasterExcel):
     def request_results(self):
         return self.__request_results
     
+    # def request_results_add(self):
+    #     self.__request_results += 1 
+    
     @request_results.setter
-    def request_results(self):
-        self.__request_results += 1
+    def request_results(self, count):
+        self.__request_results += count
     
     @request_results.deleter
     def request_results(self):
@@ -107,6 +110,11 @@ class SiteParser(MainMethods, MasterExcel):
 
         return self._save_as_file(self.EXPORT_DATA, self.get_file_extension)
     
+    def add_to_export(self):
+        if self.EXPORT_DATA:
+            return self.add_info()
+        return self.to_empty_list()
+        
     def add_info(self, common_title):
         pass
 
@@ -143,10 +151,14 @@ class SiteParser(MainMethods, MasterExcel):
 
         return f'[{ERROR}] Connection failed!'
     
+    def parser_final_results(self):
+        print(f'[{INFO}] Find {self.request_results} results.')
+        del self.searching_string
+        return f'[{SUCCESS}] File ready to export.'
+
     def parse_page(self, soup):
         self.block_parser(soup)
-        del self.searching_string
-        return f'[{SUCCESS}] File ready to export'
+        return self.parser_final_results()
 
     def parse_paginate(self, soup, max_pages):
         self.block_parser(soup)
@@ -154,12 +166,13 @@ class SiteParser(MainMethods, MasterExcel):
             response = requests.get(self.get_custom_url(search_str=self.__SEARCH, page=page), headers=PARSER_HEADERS)       
             soup = bs(response.text, 'html.parser')
             self.block_parser(soup)
-        del self.searching_string
-        return f'[{SUCCESS}] File ready to export'
+        return self.parser_final_results()
 
     def block_parser(self, soup):
         
         LIST_PARSE_OBJECTS = soup.find_all('div', class_=MAIN_PARSER_BLOCK)
+
+        self.request_results = len(LIST_PARSE_OBJECTS)
 
         values_list = []
 
@@ -175,7 +188,7 @@ class SiteParser(MainMethods, MasterExcel):
                 else:
                     if class_key != 'org_href' and class_key != 'end_date':
                         _ = _.text.strip()
-                        _ = _[:-1].rstrip() if class_key == 'price' else _
+                        _ = _[:-1].rstrip() if class_key == 'price' else _  # отсечение рубля. обновленный стайлер
 
                     if class_key == 'purchases':
                         _ = self.styler.side_taker_styler(string=_, side='left')

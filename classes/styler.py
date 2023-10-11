@@ -43,8 +43,8 @@ class Styler:
                     else:
                         middle.append(f'{middle.pop(-1)} {i}')
 
-            if len(middle) > 2:
-                raise TooManyArguments
+            # if len(middle) > 2:
+            #     raise TooManyArguments
             
             if side == 'left':
                 return middle[0]

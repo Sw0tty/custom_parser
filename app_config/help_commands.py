@@ -27,10 +27,10 @@ FILE_PARSER_COMMANDS_DICT = {
 SITE_PARSER_COMMANDS_DICT = {
     '1': 'all commands in current module',
     '2': 'parse site',
-    # '3': 'prepare to export',
+    # '3': 'add to export',
     '4': 'export to excel',
     '5': 'get url',
-    # '6': 'parse the resource',
+    # '6': 'add data with main title',
     # '7': 'get name file',
     # '8': 'export in excel file',
 }

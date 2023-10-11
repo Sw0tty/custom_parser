@@ -30,6 +30,10 @@ EXCEL_TEMPLATE = [
          'Категория', 'Ссылка']
          ]
 
+EXCEL_EXPORT_COLUMNS_TEMPLATE = ['Закупки по', 'Наименование закупки', 'Начальная (максимальная) цена контракта',
+         'Наименование заказчика', 'Дата окончания подачи заявок', 'Интерес',
+         'Категория', 'Ссылка']
+
 # Main site block with parsing info
 MAIN_PARSER_BLOCK = "search-registry-entry-block box-shadow-search-input"
 
@@ -45,23 +49,64 @@ SITE_BLOCK = {
         }
 }
 
-SITE_BLOCK_template = {
-    "SITE_NAME (main site name page)": 
-        {
-            'PARSING_PAGES':
-                [
-                    {
-                        'PAGE(autonum)':
-                            {
-                                'PAGE_NAME': '',  # html title block name
-                                'MAIN_PARSE_INFO_BLOCK': '',  # main block with all infos about (INFO_BLOCKS)
-                                'INFO_BLOCKS': []
-                            }
+SITE_BLOCK_template = [
+    {
+        "SITE_NAME (main site name page)": 
+            {
+                'PARSING_PAGES':
+                    [
+                        {
+                            'PAGE(autonum)':
+                                {
+                                    'PAGE_NAME': '',  # html title block name
+                                    'MAIN_PARSE_INFO_BLOCK': '',  # main block with all infos about (INFO_BLOCKS)
+                                    'INFO_BLOCKS': []
+                                }
+                        },
+                    ],
+                'PAGINATOR_CLASS_NAME': '',  # Name of sita paginator
+                'EXPORT': {
+                    'EXCEL': {
+                        'EXCEL_COLUMNS_TITLE': [],
+                        'ROW_COMMON_TITLES': []
                     },
-                ],
-            'PAGINATOR_CLASS_NAME': '',  # Name of sita paginator
-        }
-}
+                    # 'JSON': ''
+                }
+                # 'OPTIONS': {
+
+                # }
+            }
+    },
+]
+
+SITE_BLOCK_NEW = [
+    {
+        "SITE_NAME (main site name page)": 
+            {
+                'PARSING_PAGES':
+                    [
+                        {
+                            '0':
+                                {                                   
+                                    'PAGE_NAME': 'Закупки',
+                                    'MAIN_PARSE_INFO_BLOCK': 'search-registry-entry-block box-shadow-search-input',
+                                    'INFO_BLOCKS': []
+                                }
+                        },
+                    ],
+                'PAGINATOR_CLASS_NAME': 'paginator-block',
+                'EXPORT': {
+                    'EXCEL': {
+                        'EXCEL_COLUMNS_TITLE': ['Закупки по', 'Наименование закупки', 'Начальная (максимальная) цена контракта',
+                                'Наименование заказчика', 'Дата окончания подачи заявок', 'Интерес',
+                                'Категория', 'Ссылка'],
+                        'ROW_COMMON_TITLES': []
+                    },
+                    # 'JSON': ''
+                }
+            }
+    },
+]
 
 # Classes in main parsing block
 PARSER_DIVS_DICT = {
@@ -73,14 +118,14 @@ PARSER_DIVS_DICT = {
     'org_href': 'registry-entry__header-mid__number',
 }
 
-PARSER_DIVS_DICT_OLD = {
-    'purchases': ('col-9 p-0 registry-entry__header-top__title text-truncate', 'Закупки по: '),
-    'name': ('registry-entry__body-value', 'Наименование закупки: '),
-    'price': ('price-block__value', 'Цена: '),
-    'customer': ('registry-entry__body-href', 'Заказчик: '),
-    'end_date': ('data-block mt-auto', 'Дата окончания: '),
-    'org_href': ('registry-entry__header-mid__number', 'Ссылка: '),
-}
+# PARSER_DIVS_DICT_OLD = {
+#     'purchases': ('col-9 p-0 registry-entry__header-top__title text-truncate', 'Закупки по: '),
+#     'name': ('registry-entry__body-value', 'Наименование закупки: '),
+#     'price': ('price-block__value', 'Цена: '),
+#     'customer': ('registry-entry__body-href', 'Заказчик: '),
+#     'end_date': ('data-block mt-auto', 'Дата окончания: '),
+#     'org_href': ('registry-entry__header-mid__number', 'Ссылка: '),
+# }
 
 ZAK_44 = 'https://zakupki.gov.ru/epz/order/notice/ea20/view/common-info.html?regNumber='
 
