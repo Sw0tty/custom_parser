@@ -52,6 +52,70 @@ class Styler:
         except TooManyArguments:
             return f'[{ERROR}] Too many given arguments to unpack (expected 1-2)'
 
+    @staticmethod
+    def remove_extra_chars(text: str) -> str:
+        """
+        Removes extra chars in some str
+        """
+        if '\n' in text:
+            text = text.strip().replace('\n', ' ')
+        return text
+    
+    @staticmethod
+    def new_price_styler(price: str, price_currency=False):
+        try:
+            st = ''
+            elements = []
+            price = price.replace(' ', '')
+            print(price)
+
+            if price[0].isdigit():
+                for i in price[::-1]:
+                    if not i.isdigit():
+                        st += i
+                        continue
+                    st = st[::-1]
+                    elements.append(st)
+                    price = price.replace(st, '')
+
+                    elements.append(price)
+                    break
+
+            elements = sorted(elements)
+
+            match len(elements):
+                case 1:
+                    price = elements[0]
+                case 2:
+                    price, currency = elements               
+                case _:
+                    raise TooManyArguments
+            print(price)
+            float_part = ''
+            count_ = 0
+            new_price = ''
+
+            if '.' in price or ',' in price:
+              price = price.replace('.', ',')
+              float_part = price[price.rfind(','):]
+              price = price[:price.rfind(',')]
+                                
+            for i in price[::-1]:
+                new_price += i
+                count_ += 1
+                if count_ % 3 == 0 and count_ != len(price):
+                    new_price += ' '
+            new_price = new_price[::-1]
+
+            if not float_part:
+                float_part = ',00'
+
+            new_price += float_part
+            if price_currency:
+                return f'{new_price} {currency}'
+            return new_price
+        except TooManyArguments:
+            return f'[{ERROR}] Too many given arguments to unpack (expected 1-2)'
 
     @staticmethod
     def price_styler(price, price_currency=False):
@@ -84,7 +148,7 @@ class Styler:
 
             if dot < 0:
                 print(price)
-                new_price += '.00'
+                new_price += ',00'
             if price_currency:
                 return f'{price} {currency}'
             return new_price
@@ -103,9 +167,15 @@ class Styler:
 
 if __name__ == '__main__':
     styler = Styler()
-    value = '200000.00'
+    value = '1 175 369,46 ₽'  # 1 175 369,46 ₽
     vvv = 'fdfdf'
-    string = '223-ФЗ Запрос котировок в электронной форме, участниками которого могут быть только субъекты малого и среднего предпринимательства'
-    # print(styler.price_styler(value))
-    print(styler.side_taker_styler(string, side='left'))
-    print(vvv[0].isupper())
+    text = """
+                                        аукцион в электронной форме, участниками которого могут быть только субъекты малого и среднего предпринимательства,
+(№ ЦА 117-23) по выбору организации на право заключения договора на поставку персональных компьютеров (включающих в себя: системный блок, монитор, клавиатура, манипулятор «мышь»), моноблоков и ноутбуков для обеспечения рабочих мест работников Керченского филиала ФГУП «НИКИМП».
+                                    """
+    # print(text)
+    print(styler.new_price_styler(value, True))
+    # print(value.isdigit())
+    # print(styler.remove_extra_chars(text))
+    # print(styler.side_taker_styler(string, side='left'))
+    # print(vvv[0].isupper())

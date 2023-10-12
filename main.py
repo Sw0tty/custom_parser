@@ -15,7 +15,7 @@ from classes.styler import Styler
 
 master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
 file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
-site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT, styler_class=Styler())
+site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT)
 rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
 styler = Styler()
 

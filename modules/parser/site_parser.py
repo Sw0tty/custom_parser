@@ -12,9 +12,11 @@ from colorama import init
 from copy import deepcopy
 from tkinter.filedialog import askopenfilename, askdirectory
 from app_config.settings import TODAY_DATE, EXCEL_TEMPLATE, PARSER_DIVS_DICT, PARSER_HEADERS, MAIN_PARSER_BLOCK
+from app_config.site_parser_settings import SITE_PARSER_SETTINGS
 from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_CREATED
 from bs4 import BeautifulSoup as bs
 
+from classes.styler import Styler
 from classes.modules_default import MainMethods
 # from app_config import initialization_file
 # from classes.styler import Styler
@@ -36,14 +38,15 @@ MAIN_URL = f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searhS
 
 class SiteParser(MainMethods, MasterExcel):
     
-    def __init__(self, styler_class, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.styler = styler_class
+        self.styler = Styler()
         self.__SEARCH = ''
         self.__RESULTS_PER_PAGE = 50
         self.__PAGE_NUMBER = DEFAULT_PAGE_NUMBER
         self.__PRICE = DEFAULT_PRICE
         self.__request_results = 0
+        self.PARSE_SETTINGS = SITE_PARSER_SETTINGS
 
     @staticmethod
     def check_url_info(url):
@@ -89,7 +92,7 @@ class SiteParser(MainMethods, MasterExcel):
         self.__SEARCH = ''
     
     def get_url(self):
-        return 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString=0320100011223000238&morphology=on&search-filter=Дате+размещения&pageNumber=1&sortDirection=false&recordsPerPage=_10&showLotsInfoHidden=false&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&ca=on&pc=on&pa=on&currencyIdGeneral=-1'
+        return 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString=32312848009&morphology=on&search-filter=Дате+размещения&pageNumber=1&sortDirection=false&recordsPerPage=_10&showLotsInfoHidden=false&sortBy=UPDATE_DATE&fz44=on&fz223=on&af=on&ca=on&pc=on&pa=on&currencyIdGeneral=-1'
         # return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString=&morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={self.__PAGE_NUMBER}&recordsPerPage=_{self.__RESULTS_PER_PAGE}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
 
     def get_custom_url(self, search_str, page=1):
@@ -120,6 +123,13 @@ class SiteParser(MainMethods, MasterExcel):
 
     def to_empty_list(self, columns_title, common_title):
         pass
+    
+    def parse_site_new(self):
+        if not self.PARSE_SETTINGS:
+            return f'[{ERROR}] Add site in settings'
+        
+        for site in self.PARSE_SETTINGS:
+            pass
 
     def parse_site(self):
 
@@ -180,34 +190,39 @@ class SiteParser(MainMethods, MasterExcel):
             values_list.clear()
             for class_key in PARSER_DIVS_DICT.keys():
                 _ = parse_obj.find('div', class_=PARSER_DIVS_DICT[class_key])
-
+                _ = _.text.strip()
+                print(_)
 
                 # ----
-                if _ is None:
-                    _ = '--None value--'
-                else:
-                    if class_key != 'org_href' and class_key != 'end_date':
-                        _ = _.text.strip()
-                        _ = _[:-1].rstrip() if class_key == 'price' else _  # отсечение рубля. обновленный стайлер
+                if class_key != 'org_href' and class_key != 'end_date':
+                    # _ = _.text.strip()
 
-                    if class_key == 'purchases':
-                        _ = self.styler.side_taker_styler(string=_, side='left')
+                    # if class_key == 'price':
+                    #     _ = self.styler.new_price_styler(_, False)
 
-                    if class_key == 'end_date':
-                        _ = _.findChildren('div', class_='data-block__value', recursive=False)
-                        if _:
-                            _ = _[0].text.strip()
-                        else:
-                            _ = '--None date--'
+                    _ = _[:-1].rstrip() if class_key == 'price' else _
 
-                    if class_key == 'org_href':
-                        values_list.append('')
-                        values_list.append(3)
-                        children = _.findChildren('a')
-                        children = children[0].get('href')
-                        _ = f'https://zakupki.gov.ru{children}'
+                if class_key == 'purchases':
+                    _ = self.styler.side_taker_styler(string=_, side='left')
+
+                if class_key == 'end_date':
+                    _ = _.findChildren('div', class_='data-block__value', recursive=False)
+                    
+                    # _ = _[0].text.strip()
+
+                if class_key == 'org_href':
+                    values_list.append('')
+                    values_list.append(3)
+                    children = _.findChildren('a')
+                    children = children[0].get('href')
+                    _ = f'https://zakupki.gov.ru{children}'
                 # ----
 
                 values_list.append(_)
 
             self.EXPORT_DATA.append(values_list.copy())
+
+
+if __name__ == '__main__':
+    site_parser = SiteParser(commands='123')
+    print(site_parser.parse_site())
