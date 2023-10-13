@@ -78,9 +78,9 @@ while True:
             case '1':
                 site_parser.help()
             case '2':
-                print(site_parser.parse_site())
-            # case '3':
-            #     print(site_parser.get_file_path())
+                print(site_parser.to_empty_list())
+            case '3':
+                print(site_parser.add_info())
             case '4':
                 print(site_parser.excel_export())
             case '5':

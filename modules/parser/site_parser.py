@@ -11,7 +11,7 @@ from time import sleep
 from colorama import init
 from copy import deepcopy
 from tkinter.filedialog import askopenfilename, askdirectory
-from app_config.settings import TODAY_DATE, EXCEL_TEMPLATE, PARSER_DIVS_DICT, PARSER_HEADERS, MAIN_PARSER_BLOCK
+from app_config.settings import TODAY_DATE, EXCEL_TEMPLATE, PARSER_DIVS_DICT, PARSER_HEADERS, MAIN_PARSER_BLOCK, EXCEL_EXPORT_COLUMNS_TEMPLATE
 from app_config.site_parser_settings import SITE_PARSER_SETTINGS
 from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_CREATED
 from bs4 import BeautifulSoup as bs
@@ -111,18 +111,47 @@ class SiteParser(MainMethods, MasterExcel):
         # if not self.SEARCHING_INFO:
         #     return self.get_file_path()
 
-        return self._save_as_file(self.EXPORT_DATA, self.get_file_extension)
+        return self._save_as_file(self.EXPORT_DATA_NEW, self.get_file_extension)
     
     def add_to_export(self):
-        if self.EXPORT_DATA:
+        if self.EXPORT_DATA_NEW:
             return self.add_info()
         return self.to_empty_list()
-        
-    def add_info(self, common_title):
-        pass
+    
+    def add_common_title(self):
+        answer = input("Add common title? [y/n]\nAnswer: ")
+        if answer not in ['y', 'n']:
+            return CANCELLED
+        if answer == 'n':
+            return self.parse_site()
+        title = input("Input title: ").strip()
+        if not title:
+            return f'[{ERROR}] Empty string!'
+        self.EXPORT_DATA_NEW.append([title])
+        print(f'[{SUCCESS}] Title is added.')
+        return self.parse_site()
 
-    def to_empty_list(self, columns_title, common_title):
-        pass
+    def add_info(self):
+        if not self.EXPORT_DATA_NEW:
+            return self.to_empty_list()
+        return self.add_common_title()
+
+    def to_empty_list(self):
+        if self.EXPORT_DATA_NEW:
+            answer = input("List is not empty. Clear?[Y/n]\nAnswer: ")
+            if answer not in ['Y', 'n']:
+                return CANCELLED
+            self.EXPORT_DATA_NEW.clear()
+            print(f'[{SUCCESS}] Data is cleared!')
+
+        answer = input("Add columns titles?[y/n]\nAnswer: ")
+        if answer not in ['y', 'n']:
+            return CANCELLED
+        if answer == 'n':
+            return self.add_common_title()
+        self.EXPORT_DATA_NEW.append(EXCEL_EXPORT_COLUMNS_TEMPLATE)
+        print(f'[{SUCCESS}] Columns titles added.')
+        return self.add_common_title()
     
     def parse_site_new(self):
         if not self.PARSE_SETTINGS:
@@ -130,21 +159,28 @@ class SiteParser(MainMethods, MasterExcel):
         
         for site in self.PARSE_SETTINGS:
             pass
+    
+    def parse_extra_site_page(self):
+        return input('Site url: ')
 
     def parse_site(self):
-
+        print(self.request_results)
         answer = input("""Print 'default' to parse default settings. 'search' to set search string.\nAnswer: """)
 
         if answer == 'default':
             url = self.get_url()
+        elif answer == 'extra':
+            url = self.parse_extra_site_page()
         elif answer == 'search':
             search_str = input("What's searching?\nAnswer: ").strip()
             if search_str:
                 self.searching_string = search_str
                 url = self.get_custom_url(self.searching_string)
             else:
+                self.EXPORT_DATA_NEW.remove(self.EXPORT_DATA_NEW[-1])
                 return CANCELLED
         else:
+            self.EXPORT_DATA_NEW.remove(self.EXPORT_DATA_NEW[-1])
             return CANCELLED
         
         parse_result = self.check_url_info(url)
@@ -163,7 +199,7 @@ class SiteParser(MainMethods, MasterExcel):
     
     def parser_final_results(self):
         print(f'[{INFO}] Find {self.request_results} results.')
-        del self.searching_string
+        del self.request_results
         return f'[{SUCCESS}] File ready to export.'
 
     def parse_page(self, soup):
@@ -190,12 +226,11 @@ class SiteParser(MainMethods, MasterExcel):
             values_list.clear()
             for class_key in PARSER_DIVS_DICT.keys():
                 _ = parse_obj.find('div', class_=PARSER_DIVS_DICT[class_key])
-                _ = _.text.strip()
-                print(_)
+
 
                 # ----
                 if class_key != 'org_href' and class_key != 'end_date':
-                    # _ = _.text.strip()
+                    _ = _.text.strip()
 
                     # if class_key == 'price':
                     #     _ = self.styler.new_price_styler(_, False)
@@ -208,7 +243,7 @@ class SiteParser(MainMethods, MasterExcel):
                 if class_key == 'end_date':
                     _ = _.findChildren('div', class_='data-block__value', recursive=False)
                     
-                    # _ = _[0].text.strip()
+                    _ = _[0].text.strip()
 
                 if class_key == 'org_href':
                     values_list.append('')
@@ -220,7 +255,7 @@ class SiteParser(MainMethods, MasterExcel):
 
                 values_list.append(_)
 
-            self.EXPORT_DATA.append(values_list.copy())
+            self.EXPORT_DATA_NEW.append(values_list.copy())
 
 
 if __name__ == '__main__':

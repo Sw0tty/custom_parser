@@ -32,24 +32,26 @@ class MainMethods:
         
         if not file:
             return CANCELLED
+        try:
+            match file_extension(file):
+                case '.xlsx':
+                    work_book = Workbook()
+                    work_sheet = work_book.active
+                    work_sheet.title = DEFAULT_NAME_SAVE_FILE
 
-        match file_extension(file):
-            case '.xlsx':
-                work_book = Workbook()
-                work_sheet = work_book.active
-                work_sheet.title = DEFAULT_NAME_SAVE_FILE
-
-                for row in import_data:
-                    work_sheet.append(row)
-                work_book.save(file)
-
-            case '.csv':
-                with open(file, 'w') as csv_file:
-                    csv_writer = csv.writer(csv_file, lineterminator="\r", delimiter = ";")
-                    
                     for row in import_data:
-                        csv_writer.writerow(row)
-            case _:
-                return f'[{ERROR}] Unexpected extension!'
-        return FILE_CREATED
+                        work_sheet.append(row)
+                    work_book.save(file)
+
+                case '.csv':
+                    with open(file, 'w') as csv_file:
+                        csv_writer = csv.writer(csv_file, lineterminator="\r", delimiter = ";")
+                        
+                        for row in import_data:
+                            csv_writer.writerow(row)
+                case _:
+                    return f'[{ERROR}] Unexpected extension!'
+            return FILE_CREATED
+        except PermissionError:
+            return f'[{ERROR}] File open in other program!'
     
