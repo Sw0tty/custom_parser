@@ -5,7 +5,7 @@ Add new configs in the site_parser_settings file.
 """
 
 
-class ParserSitesAdder:
+class ParserSitesManager:
     
     @staticmethod
     def get_domain(url: str) -> str:
@@ -25,7 +25,7 @@ class ParserSitesAdder:
 
 
 if __name__ == '__main__':
-    site_adder = ParserSitesAdder()
+    site_adder = ParserSitesManager()
     print(site_adder.check_secure('http://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString=32312848009&morp'))
 
 
