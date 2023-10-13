@@ -32,7 +32,7 @@ def reset_module():
     print("All modules:")
     for module in MODULES.keys():
         print(f'\t{styler.module_styler(module)} - {MODULES[module]}')
-    return input('Print module: ').strip().lower()
+    return styler.console_user_input_styler('Print module: ').lower()
 
 
 while True:

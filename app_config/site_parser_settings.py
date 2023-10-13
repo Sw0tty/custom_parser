@@ -31,8 +31,9 @@ SITE_BLOCK_template = [
 
 SITE_PARSER_SETTINGS = [
     {
-        "https://zakupki.gov.ru": 
+        "zakupki.gov.ru": 
             {
+                'SECURE_CONNECTION':True,
                 'PARSING_PAGES':
                     [
 

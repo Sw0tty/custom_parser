@@ -97,19 +97,17 @@ class Rebuilder(MainMethods, MasterExcel):
             values_list.append(3)
 
             if '223' in values_list[0]:
-                for i in range(0, 4):
-                    response = requests.get(URL_TEMPLATE + replays_value, headers=PARSER_HEADERS)
-                    
-                    if response.status_code == 200:
-                        data = bS(response.text, "html.parser")
-                        list_parse_objects = data.find_all('div', class_=MAIN_PARSER_BLOCK)
 
-                        for parse_obj in list_parse_objects:
-                            _ = parse_obj.find('div', class_=PARSER_DIVS_DICT['org_href'])
-                            children = _.findChildren('a')
-                            children = children[0].get('href')
-                            replays_value = f'https://zakupki.gov.ru{children}'
-                        break
+                response = requests.get(URL_TEMPLATE + replays_value, headers=PARSER_HEADERS)
+                
+                data = bS(response.text, "html.parser")
+                list_parse_objects = data.find_all('div', class_=MAIN_PARSER_BLOCK)
+
+                for parse_obj in list_parse_objects:
+                    _ = parse_obj.find('div', class_=PARSER_DIVS_DICT['org_href'])
+                    children = _.findChildren('a')
+                    children = children[0].get('href')
+                    replays_value = f'https://zakupki.gov.ru{children}'                       
 
                 values_list.append(replays_value)
             else:

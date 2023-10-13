@@ -1,5 +1,6 @@
 """
-!!!-IN PROCESS-!!!
+Parse sites.
+!Now parse in handle config.!
 """
 import requests
 from bs4 import BeautifulSoup as bs
@@ -64,12 +65,16 @@ class SiteParser(MainMethods, MasterExcel):
             return soup, int(pages[-1].text)
         return soup
     
+    # @staticmethod
+    # def get_domain(url: str) -> str:
+    #     """
+    #     Return the site domain.
+    #     """
+    #     return url[url.find('/') + 2:url.find('/', 8)]
+    
     @property
     def request_results(self):
         return self.__request_results
-    
-    # def request_results_add(self):
-    #     self.__request_results += 1 
     
     @request_results.setter
     def request_results(self, count):
@@ -97,20 +102,10 @@ class SiteParser(MainMethods, MasterExcel):
 
     def get_custom_url(self, search_str, page=1):
         return f'https://zakupki.gov.ru/epz/order/extendedsearch/results.html?searchString={search_str}&morphology=on&search-filter=%D0%94%D0%B0%D1%82%D0%B5+%D1%80%D0%B0%D0%B7%D0%BC%D0%B5%D1%89%D0%B5%D0%BD%D0%B8%D1%8F&pageNumber={page}&recordsPerPage=_{self.__RESULTS_PER_PAGE}&fz44=on&fz223=on&af=on&priceFromGeneral={self.__PRICE}&currencyIdGeneral=-1&publishDateFrom={DATE_DAYS_AGO}&publishDateTo={TODAY_DATE}'
-
-    def get_search_string(self):
-        return self.__SEARCH
-    
-    # def set_search_string(self):
-    #     return 1
- 
-    # def get_page(self):
-    #     return self.__PAGE_NUMBER 
     
     def excel_export(self):
-        # if not self.SEARCHING_INFO:
-        #     return self.get_file_path()
-
+        if not self.EXPORT_DATA_NEW:
+            return f'[{ERROR}] Nothing to export!'
         return self._save_as_file(self.EXPORT_DATA_NEW, self.get_file_extension)
     
     def add_to_export(self):
@@ -119,12 +114,12 @@ class SiteParser(MainMethods, MasterExcel):
         return self.to_empty_list()
     
     def add_common_title(self):
-        answer = input("Add common title? [y/n]\nAnswer: ")
+        answer = self.styler.console_user_input_styler("Add common title? [y/n]\nAnswer: ")
         if answer not in ['y', 'n']:
             return CANCELLED
         if answer == 'n':
             return self.parse_site()
-        title = input("Input title: ").strip()
+        title = self.styler.console_user_input_styler("Input title: ")
         if not title:
             return f'[{ERROR}] Empty string!'
         self.EXPORT_DATA_NEW.append([title])
@@ -138,13 +133,13 @@ class SiteParser(MainMethods, MasterExcel):
 
     def to_empty_list(self):
         if self.EXPORT_DATA_NEW:
-            answer = input("List is not empty. Clear?[Y/n]\nAnswer: ")
+            answer = self.styler.console_user_input_styler("List is not empty. Clear?[Y/n]\nAnswer: ")
             if answer not in ['Y', 'n']:
                 return CANCELLED
             self.EXPORT_DATA_NEW.clear()
             print(f'[{SUCCESS}] Data is cleared!')
 
-        answer = input("Add columns titles?[y/n]\nAnswer: ")
+        answer = self.styler.console_user_input_styler("Add columns titles?[y/n]\nAnswer: ")
         if answer not in ['y', 'n']:
             return CANCELLED
         if answer == 'n':
@@ -164,15 +159,14 @@ class SiteParser(MainMethods, MasterExcel):
         return input('Site url: ')
 
     def parse_site(self):
-        print(self.request_results)
-        answer = input("""Print 'default' to parse default settings. 'search' to set search string.\nAnswer: """)
+        answer = self.styler.console_user_input_styler("""Print 'default' to parse default settings. 'search' to set search string.\nAnswer: """)
 
         if answer == 'default':
             url = self.get_url()
         elif answer == 'extra':
             url = self.parse_extra_site_page()
         elif answer == 'search':
-            search_str = input("What's searching?\nAnswer: ").strip()
+            search_str = self.styler.console_user_input_styler("What's searching?\nAnswer: ")
             if search_str:
                 self.searching_string = search_str
                 url = self.get_custom_url(self.searching_string)

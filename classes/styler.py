@@ -156,7 +156,7 @@ class Styler:
             return f'[{ERROR}] Too many given arguments to unpack (expected 1-2)'
         
     def console_user_input_styler(self, help_string):
-        answer = input(help_string + Fore.GREEN + "\x1B[3m")
+        answer = input(help_string + Fore.GREEN + "\x1B[3m").strip()
         self.reset_all_styles()
         return answer
     
@@ -164,6 +164,9 @@ class Styler:
         style_string = Fore.GREEN + "\x1B[3m" + string
         
         return style_string
+    
+    def get_main_url(self):
+        pass
 
 if __name__ == '__main__':
     styler = Styler()
@@ -174,8 +177,22 @@ if __name__ == '__main__':
 (№ ЦА 117-23) по выбору организации на право заключения договора на поставку персональных компьютеров (включающих в себя: системный блок, монитор, клавиатура, манипулятор «мышь»), моноблоков и ноутбуков для обеспечения рабочих мест работников Керченского филиала ФГУП «НИКИМП».
                                     """
     # print(text)
-    print(styler.new_price_styler(value, True))
+    # print(styler.new_price_styler(value, True))
     # print(value.isdigit())
     # print(styler.remove_extra_chars(text))
     # print(styler.side_taker_styler(string, side='left'))
     # print(vvv[0].isupper())
+
+    def get_domain(url: str) -> str:
+        """
+        Return the site domain
+        """
+        return url[url.find('/') + 2:url.find('/', 8)]
+    
+
+    url = 'https://zakupki.gov.ru/epz/order/notice/notice223/common-info.html?noticeInfoId=15828618'
+    domain = get_domain(url)
+    # print(get_domain(url))
+
+    print(domain in url)
+
