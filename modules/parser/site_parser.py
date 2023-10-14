@@ -13,7 +13,7 @@ from colorama import init
 from copy import deepcopy
 from tkinter.filedialog import askopenfilename, askdirectory
 from app_config.settings import TODAY_DATE, EXCEL_TEMPLATE, PARSER_DIVS_DICT, PARSER_HEADERS, MAIN_PARSER_BLOCK, EXCEL_EXPORT_COLUMNS_TEMPLATE
-from app_config.site_parser_settings import SITE_PARSER_SETTINGS
+from app_config.site_parser_settings import SITE_PARSER_SETTINGS # reader from ParserSitesManager
 from app_config.app_notices import ERROR, SUCCESS, INFO, CANCELLED, FILE_CREATED
 from bs4 import BeautifulSoup as bs
 
