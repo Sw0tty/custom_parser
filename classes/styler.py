@@ -62,12 +62,15 @@ class Styler:
         return text
     
     @staticmethod
-    def new_price_styler(price: str, price_currency=False):
+    def price_styler(price: str, price_currency=False):
+        """
+        Return price in format like '1 000 000.00'
+        """
         try:
             st = ''
             elements = []
             price = price.replace(' ', '')
-            print(price)
+            price = price.replace(chr(160), '')
 
             if price[0].isdigit():
                 for i in price[::-1]:
@@ -90,7 +93,6 @@ class Styler:
                     price, currency = elements               
                 case _:
                     raise TooManyArguments
-            print(price)
             float_part = ''
             count_ = 0
             new_price = ''
@@ -104,7 +106,7 @@ class Styler:
                 new_price += i
                 count_ += 1
                 if count_ % 3 == 0 and count_ != len(price):
-                    new_price += ' '
+                    new_price += chr(160)
             new_price = new_price[::-1]
 
             if not float_part:
@@ -118,10 +120,7 @@ class Styler:
             return f'[{ERROR}] Too many given arguments to unpack (expected 1-2)'
 
     @staticmethod
-    def price_styler(price, price_currency=False):
-        """
-        Return price in format like '1 000 000.00'
-        """
+    def old_price_styler(price, price_currency=False):
         try:
             float(price)
 

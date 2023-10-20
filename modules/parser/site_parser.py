@@ -181,7 +181,8 @@ class SiteParser(MainMethods, MasterExcel):
 
         if not parse_result:
             del self.searching_string
-            return f'[{INFO}] For request {search_str} nothing found.'
+            return None
+            # return f'[{INFO}] For request {search_str} nothing found.'
 
         if isinstance(parse_result, bs):
             return self.parse_page(parse_result)
@@ -226,10 +227,8 @@ class SiteParser(MainMethods, MasterExcel):
                 if class_key != 'org_href' and class_key != 'end_date':
                     _ = _.text.strip()
 
-                    # if class_key == 'price':
-                    #     _ = self.styler.new_price_styler(_, False)
-
-                    _ = _[:-1].rstrip() if class_key == 'price' else _
+                    if class_key == 'price':
+                        _ = self.styler.price_styler(_, False)
 
                 if class_key == 'purchases':
                     _ = self.styler.side_taker_styler(string=_, side='left')
