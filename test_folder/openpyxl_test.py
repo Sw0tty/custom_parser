@@ -164,3 +164,5 @@ print(a.b_class.get_aba())
 #     data.clear()   
 
 # print(reader)
+
+print(datetime.datetime.today().weekday())  # Friday = 4
