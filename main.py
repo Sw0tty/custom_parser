@@ -12,6 +12,9 @@ from modules.parser.site_parser import SiteParser
 from modules.rebuilder import Rebuilder
 from classes.styler import Styler
 
+import datetime
+import os
+from tkinter.messagebox import showwarning
 
 master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
 file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
@@ -24,6 +27,14 @@ styler = Styler()
 
 # rebuilder.EXPORT_DATA.append([2, 3, 4])
 # print(file_parser.EXPORT_DATA)
+
+if datetime.datetime.today().weekday() + 1 == 1:   
+    WEEK_AGO = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%d.%m.%Y")
+    TODAY_DATE = datetime.date.today().strftime('%d.%m.%Y')
+    if os.path.exists(fr"C:\Users\Егор\Desktop\Еженедельный отчет Егоров от {WEEK_AGO}.doc"):
+        os.rename(fr"C:\Users\Егор\Desktop\Еженедельный отчеторов от {WEEK_AGO}.doc", fr"C:\Users\Егор\Desktop\Еженедельный отчет Егоров от {TODAY_DATE}.doc")
+        showwarning(title="Пятница файл", message="Еженедельный файл")
+
 
 print(f"""[{INFO}] Print {HELP} for call list commands.""")
 
