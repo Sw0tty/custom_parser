@@ -134,7 +134,7 @@ class SiteParser(MainMethods, MasterExcel):
     def to_empty_list(self):
         if self.EXPORT_DATA_NEW:
             answer = self.styler.console_user_input_styler("List is not empty. Clear?[Y/n]\nAnswer: ")
-            if answer not in ['Y', 'n']:
+            if answer not in ['Y', 'n'] or answer == 'n':
                 return CANCELLED
             self.EXPORT_DATA_NEW.clear()
             print(f'[{SUCCESS}] Data is cleared!')
@@ -181,6 +181,7 @@ class SiteParser(MainMethods, MasterExcel):
 
         if not parse_result:
             del self.searching_string
+            self.EXPORT_DATA_NEW.append(['Ничего'])
             return None
             # return f'[{INFO}] For request {search_str} nothing found.'
 
