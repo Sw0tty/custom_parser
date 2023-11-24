@@ -167,6 +167,15 @@ class Styler:
     def get_main_url(self):
         pass
 
+    @staticmethod
+    def exclude_data_styler(checked_data):
+        some_words = ['для нужд',]
+        for exclusion_word in some_words:
+            if exclusion_word in checked_data:
+                return True
+        return False
+
+
 if __name__ == '__main__':
     styler = Styler()
     value = '1 175 369,46 ₽'  # 1 175 369,46 ₽
