@@ -1,5 +1,5 @@
 {
-    "SECURE_CONNECTION": "",
+    "SECURE_CONNECTION": false,
     "PARSING_PAGES": {
         "page_name": {
             "PAGE_URL": "",

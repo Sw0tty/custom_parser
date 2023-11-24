@@ -1,7 +1,7 @@
 """
-!!! - IN PROGRESS - !!!
-Add new configs in the site_parser_settings file.
-!!! - IN PROGRESS - !!!
+!!! - NOT ACTUAL- !!!
+-- Add new configs in the site_parser_settings file. --
+!!! - NOT ACTUAL - !!!
 """
 import os
 import json
@@ -20,7 +20,7 @@ class ParserSitesManager:
         """
         Create template.json if not exist.
         """
-        with open(r'app_config\site_parser_congif\template.json', 'w', encoding='utf-8')  as template_file:
+        with open(r'app_config\site_parser_config\template.json', 'w', encoding='utf-8')  as template_file:
             template = {
                 "SECURE_CONNECTION": "",
                 "PARSING_PAGES":

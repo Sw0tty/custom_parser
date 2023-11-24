@@ -11,16 +11,23 @@ from modules.parser.file_parser import FileParser
 from modules.parser.site_parser import SiteParser
 from modules.rebuilder import Rebuilder
 from classes.styler import Styler
+from modules.parser_manager.manager import ConfigManager
+from modules.parser_manager.checker import ConfigChecker
+from modules.parser_manager.validator import Validator
 
 import datetime
 import os
 from tkinter.messagebox import showwarning
+
 
 master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
 file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
 site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT)
 rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
 styler = Styler()
+changer = ConfigManager()
+checker = ConfigChecker()
+validator = Validator()
 
 # print(rebuilder.EXPORT_DATA)
 # print(rebuilder.EXPORT_DATA)
@@ -28,11 +35,11 @@ styler = Styler()
 # rebuilder.EXPORT_DATA.append([2, 3, 4])
 # print(file_parser.EXPORT_DATA)
 
-if datetime.datetime.today().weekday() + 1 == 1:   
+if datetime.datetime.today().weekday() + 1 == 5:   
     WEEK_AGO = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%d.%m.%Y")
     TODAY_DATE = datetime.date.today().strftime('%d.%m.%Y')
     if os.path.exists(fr"C:\Users\Егор\Desktop\Еженедельный отчет Егоров от {WEEK_AGO}.doc"):
-        os.rename(fr"C:\Users\Егор\Desktop\Еженедельный отчеторов от {WEEK_AGO}.doc", fr"C:\Users\Егор\Desktop\Еженедельный отчет Егоров от {TODAY_DATE}.doc")
+        os.rename(fr"C:\Users\Егор\Desktop\Еженедельный отчет Егоров от {WEEK_AGO}.doc", fr"C:\Users\Егор\Desktop\Еженедельный отчет Егоров от {TODAY_DATE}.doc")
         showwarning(title="Пятница файл", message="Еженедельный файл")
 
 
@@ -113,3 +120,7 @@ while True:
                 print(rebuilder.prepare_rebuild())
             case '7':
                 print(rebuilder.excel_export())
+    elif CURRENT_MODULE == 'parser-manager':
+        match input_command:
+            case '1':
+                pass
