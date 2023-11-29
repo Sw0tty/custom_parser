@@ -8,16 +8,27 @@ from tkinter.filedialog import asksaveasfilename
 from app_config.settings import DEFAULT_NAME_SAVE_FILE, SUPPORTED_FORMATS
 from app_config.app_notices import CANCELLED, ERROR, FILE_CREATED
 
-class MainMethods:
 
-    def __init__(self, commands: dict):
-        self.__commands = commands
+# class HelpMethod:
+
+#     def __init__(self, commands: dict):
+#         self.__commands = commands
+
+#     def help(self):
+#         for key in self.__commands.keys():
+#             print(f'\t{key} - {self.__commands[key]}')
+
+
+class MainMethods():
+
+    # def __init__(self, commands: dict):
+    #     self.__commands = commands
         # self.EXPORT_DATA = deepcopy(EXCEL_TEMPLATE)
         # self.OPEN_ = deepcopy(OPENPX_EXCEL_TEMPLATE)
 
-    def help(self):
-        for key in self.__commands.keys():
-            print(f'\t{key} - {self.__commands[key]}')
+    # def help(self):
+    #     for key in self.__commands.keys():
+    #         print(f'\t{key} - {self.__commands[key]}')
 
     @staticmethod
     def _save_as_file(import_data: list, file_extension: str) -> str:

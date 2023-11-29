@@ -3,16 +3,15 @@ Main File MasterExcel
 """
 
 from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, CURRENT_MODULE
-from app_config.app_notices import RESET_MODULE, INFO, HELP
-from app_config.help_commands import MAIN_COMMANDS_DICT, MODULES, REBUILDER_COMMANDS_DICT,\
-    FILE_PARSER_COMMANDS_DICT, SITE_PARSER_COMMANDS_DICT
+from app_config.app_notices import RESET_MODULE, INFO, HELP, ERROR, WARNING
+from modules.help import HelpModule, MODULES
 from classes.modules_default import MainMethods
 from modules.parser.file_parser import FileParser
 from modules.parser.site_parser import SiteParser
 from modules.rebuilder import Rebuilder
 from classes.styler import Styler
 from modules.parser_manager.manager import ConfigManager
-from modules.parser_manager.checker import ConfigChecker
+from modules.parser_manager.file_manager import FileManager
 from modules.parser_manager.validator import Validator
 
 import datetime
@@ -20,20 +19,18 @@ import os
 from tkinter.messagebox import showwarning
 
 
-master_excel = MainMethods(commands=MAIN_COMMANDS_DICT)
-file_parser = FileParser(commands=FILE_PARSER_COMMANDS_DICT)
-site_parser = SiteParser(commands=SITE_PARSER_COMMANDS_DICT)
-rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
+help_module = HelpModule()
+master_excel = MainMethods()
+file_parser = FileParser()
+site_parser = SiteParser()
+rebuilder = Rebuilder()
 styler = Styler()
-changer = ConfigManager()
-checker = ConfigChecker()
+config_manager = ConfigManager()
+file_manager = FileManager()
 validator = Validator()
-
-# print(rebuilder.EXPORT_DATA)
-# print(rebuilder.EXPORT_DATA)
-
-# rebuilder.EXPORT_DATA.append([2, 3, 4])
-# print(file_parser.EXPORT_DATA)
+config = file_manager.load_config(True)
+print(config.keys())
+print(config_manager.template)
 
 if datetime.datetime.today().weekday() + 1 == 5:   
     WEEK_AGO = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%d.%m.%Y")
@@ -47,10 +44,21 @@ print(f"""[{INFO}] Print {HELP} for call list commands.""")
 
 
 def reset_module():
+    global CURRENT_MODULE
     print("All modules:")
     for module in MODULES.keys():
         print(f'\t{styler.module_styler(module)} - {MODULES[module]}')
-    return styler.console_user_input_styler('Print module: ').lower()
+    new_module = styler.console_user_input_styler('Print module: ').lower()
+    if new_module and new_module in MODULES:
+        if new_module == 'parser-manager':
+            CURRENT_MODULE = new_module
+            return RESET_MODULE
+
+        if isinstance(file_manager.load_config(), dict):
+            CURRENT_MODULE = new_module
+            return RESET_MODULE
+        return f'[{ERROR}] Config not found!'
+    return f'[{WARNING}] Cancelled.'
 
 
 while True:
@@ -60,18 +68,14 @@ while True:
     
     match input_command:
         case 'help':
-            master_excel.help()
+            help_module.help(CURRENT_MODULE)
         case 'set':
-            new_module = reset_module()
-            if new_module and new_module in MODULES:
-                # if new_module == 'parser':
-                #     pass
-                CURRENT_MODULE = new_module
-                print(RESET_MODULE)
-                continue
+            print(reset_module())
+            continue
         case 'reset':
-            CURRENT_MODULE = 'None-module'
-            print(RESET_MODULE)
+            if CURRENT_MODULE != 'None-module':
+                CURRENT_MODULE = 'None-module'
+                print(RESET_MODULE)
             continue
         case 'exit':
             break
@@ -79,48 +83,47 @@ while True:
     if CURRENT_MODULE == 'file-parser':
         match input_command:
             case '1':
-                file_parser.help()
-            case '2':
                 print(file_parser.get_file_path())
-            case '3':
+            case '2':
                 print(file_parser.set_file_path())
-            case '4':
+            case '3':
                 print(file_parser.get_file_name())
-            case '5':
+            case '4':
                 print(file_parser.parse_file(PARSER_DIVS_DICT))
-            case '6':
+            case '5':
                 print(file_parser.excel_export())
 
     elif CURRENT_MODULE == 'site-parser':
         match input_command:
             case '1':
-                site_parser.help()
-            case '2':
                 print(site_parser.to_empty_list())
-            case '3':
+            case '2':
                 print(site_parser.add_info())
-            case '4':
+            case '3':
                 print(site_parser.excel_export())
-            case '5':
+            case '4':
                 print(site_parser.get_url())
 
     elif CURRENT_MODULE == 'rebuilder':
         match input_command:
             case '1':
-                rebuilder.help()
-            case '2':
                 print(rebuilder.set_selected_file())
-            case '3':
+            case '2':
                 rebuilder.get_params_status()
-            case '4':
+            case '3':
                 print(rebuilder.get_file_name())
-            case '5':
+            case '4':
                 print(rebuilder.get_rebuild_status())
-            case '6':
+            case '5':
                 print(rebuilder.prepare_rebuild())
-            case '7':
+            case '6':
                 print(rebuilder.excel_export())
     elif CURRENT_MODULE == 'parser-manager':
         match input_command:
-            case '1':
-                pass
+            case '1':  # create config
+                print(file_manager.create_config())
+            case '2':  # add site
+                config = file_manager.load_config(add_site=True)
+                print(config_manager.add_parsing_site(config))
+                # if validator.validate_unique_site()
+                # file_manager.save_config(config)
