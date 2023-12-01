@@ -6,7 +6,28 @@ import csv
 from openpyxl import Workbook
 from tkinter.filedialog import asksaveasfilename
 from app_config.settings import DEFAULT_NAME_SAVE_FILE, SUPPORTED_FORMATS
-from app_config.app_notices import CANCELLED, ERROR, FILE_CREATED
+from app_config.app_notices import CANCELLED, ERROR, SUCCESS, FILE_CREATED
+
+
+class ConfigSelect:
+    
+    config = None
+    site_name = None
+    site_config = None
+
+    @property
+    def config(self, config):
+        self.config = config
+    
+    @config.deleter
+    def config(self):
+        self.config = None
+
+    def set_site_config(self, site_name):
+        self.site_config = self.config[site_name]
+        self.site_name = site_name
+        del self.config
+        return f"[{SUCCESS}] Site config selected."
 
 
 # class HelpMethod:

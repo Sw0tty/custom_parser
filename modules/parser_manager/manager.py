@@ -37,7 +37,7 @@ class ConfigManager(FileManager, Validator):
         Return secure site status.
         """
         return 's' in url[:url.find(':')]
-    
+     
     def add_parsing_site(self, config_file):
         url = input("Input site url: ").strip()
         if url:
@@ -61,12 +61,12 @@ class ConfigManager(FileManager, Validator):
     def add_parsing_page(self):
         pass
 
-    def load_template(self):
-        with open(r'path', 'r', 'utf-8') as config:
-            config_file = json.loads(config)
-        return config_file
+    # def load_template(self):
+    #     with open(r'path', 'r', 'utf-8') as config:
+    #         config_file = json.loads(config)
+    #     return config_file
     
-    def set_name(self):
+    def get_site_config(self):
         pass
     
     # def save_config(self, file):

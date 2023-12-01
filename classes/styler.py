@@ -4,7 +4,7 @@ Style console commands, parsing strings.
 from colorama import Fore, Style
 
 from app_config.app_notices import ERROR
-from app_config.settings import CURRENT_MODULE
+from app_config.settings import CURRENT_MODULE, SITE_CONFIG
 from classes.exceptions import TooManyArguments, UnexpectedSideParameter
 
 
@@ -20,7 +20,7 @@ class Styler:
         Colored selected module.
         Needed in console_version.
         """
-        if module == CURRENT_MODULE:
+        if module == CURRENT_MODULE or module == SITE_CONFIG:
             return Fore.RED + module + Style.RESET_ALL
         return Fore.MAGENTA + module + Style.RESET_ALL
     

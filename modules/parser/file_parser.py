@@ -12,11 +12,12 @@ from classes.modules_default import MainMethods
 from tkinter.filedialog import askopenfilename, askdirectory
 from app_config.settings import price_styler, MAIN_PARSER_BLOCK
 from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, INFO, APPLY_STRING
+from classes.modules_default import ConfigSelect
 
 init()
 
 
-class FileParser(MainMethods, MasterExcel):
+class FileParser(MainMethods, MasterExcel, ConfigSelect):
 
     SEARCHING_INFO = None
 

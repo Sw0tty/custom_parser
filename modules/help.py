@@ -51,7 +51,7 @@ MODULES = {
     'rebuilder': 'rebuilding the excel file for template',
     'file-parser': 'parse the file',
     'site-parser': 'parse the site',
-    'parser-manager': 'config the config file',
+    'manager': 'config the config file',
 }
 
 

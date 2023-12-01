@@ -8,7 +8,7 @@ class Template:
                         {
                             
                         },
-                    "PAGINATOR_CLASS_NAME": "",
+                    
                     "EXPORT": {
                         "EXCEL": {
                             "EXCEL_COLUMNS_TITLE": [],
@@ -22,9 +22,10 @@ class Template:
             "MAIN_PARSE_INFO_BLOCK": "",
             "INFO_BLOCKS":
                 [   
-                    ["", "", ""]
+                    
                 ],
-            "CUSTOM_FIELDS": []
+            "CUSTOM_FIELDS": [],
+            "PAGINATOR_CLASS_NAME": ""
         }
         self.info_block_template = ["", "", ""]
         self.count_main_keys = len(self.template.keys())
@@ -34,7 +35,7 @@ if __name__ == '__main__':
     template = Template()
     print(template.count_main_keys)
 
-
+exclude_words = ["для нужд", "томограф", "для ООО", "мебел", "вентиляц", "видеонаб", "планшет", "проектор", "медицинского", "тонометр"]
 # self.template = {
 #                     "SECURE_CONNECTION": False,
 #                     "PARSING_PAGES":

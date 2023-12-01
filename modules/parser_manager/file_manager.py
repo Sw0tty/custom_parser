@@ -1,6 +1,5 @@
 """
-Check existing parser_config or template.
-Creating if not exist for config_manager.
+
 """
 import os
 import json
@@ -12,6 +11,7 @@ from modules.parser_manager.template import Template
 
 
 load_dotenv(Path('app_config\site_parser_config\.env'))
+
 
 class FileManager(Template):
 
@@ -32,10 +32,11 @@ class FileManager(Template):
         if self.file_exist():
             with open(r'app_config\site_parser_config\parser_config.json', 'r', encoding='utf-8') as config_file:
                 config = json.load(config_file)
-                if add_site:
-                    return config
-                return config[self.default_site_name]
-        return f'[{ERROR}] File not exist!'
+                site_config = config.get(self.default_site_name, None)
+                if site_config:
+                    return site_config, self.default_site_name
+                return config
+        return None
 
     def save_config(self, config_data):
         with open(r'app_config\site_parser_config\parser_config.json', 'w', encoding='utf-8') as config_file:
@@ -47,7 +48,7 @@ class FileManager(Template):
         with open(r'app_config\site_parser_config\parser_config.json', 'w', encoding='utf-8') as template_file:
             json.dump(self.template, template_file)
         return f'[{SUCCESS}] Config created!'
-        
+       
     # def overwrite_template(self, is_valid):
     #     if not self.file_exist:
     #         return self.create_template()

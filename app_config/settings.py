@@ -6,6 +6,7 @@ TODAY_DATE = date.today().strftime('%d.%m.%Y')
 NAME = 'MasterExcel'
 MASTER_CMD_INPUT = r'\>'
 CURRENT_MODULE = 'None-module'
+SITE_CONFIG = 'Config-not-selected'
 
 PARSER_HEADERS = {
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'

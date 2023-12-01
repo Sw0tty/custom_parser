@@ -2,8 +2,8 @@
 Main File MasterExcel
 """
 
-from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, CURRENT_MODULE
-from app_config.app_notices import RESET_MODULE, INFO, HELP, ERROR, WARNING
+from app_config.settings import NAME, MASTER_CMD_INPUT, PARSER_DIVS_DICT, CURRENT_MODULE, SITE_CONFIG
+from app_config.app_notices import RESET_MODULE, INFO, HELP, ERROR, WARNING, SUCCESS
 from modules.help import HelpModule, MODULES
 from classes.modules_default import MainMethods
 from modules.parser.file_parser import FileParser
@@ -26,11 +26,11 @@ site_parser = SiteParser()
 rebuilder = Rebuilder()
 styler = Styler()
 config_manager = ConfigManager()
-file_manager = FileManager()
+# file_manager = FileManager()
 validator = Validator()
-config = file_manager.load_config(True)
-print(config.keys())
-print(config_manager.template)
+# config = config_manager.load_config(True)
+# print(config.keys())
+# print(config_manager.template)
 
 if datetime.datetime.today().weekday() + 1 == 5:   
     WEEK_AGO = (datetime.datetime.now() - datetime.timedelta(days=7)).strftime("%d.%m.%Y")
@@ -45,27 +45,41 @@ print(f"""[{INFO}] Print {HELP} for call list commands.""")
 
 def reset_module():
     global CURRENT_MODULE
+    global SITE_CONFIG
     print("All modules:")
     for module in MODULES.keys():
         print(f'\t{styler.module_styler(module)} - {MODULES[module]}')
-    new_module = styler.console_user_input_styler('Print module: ').lower()
+    new_module = styler.console_user_input_styler("Print module: ").lower()
     if new_module and new_module in MODULES:
-        if new_module == 'parser-manager':
+        # if new_module == 'manager':
+        #     CURRENT_MODULE = new_module
+        #     return RESET_MODULE
+        
+        config_status = config_manager.load_config()
+        if isinstance(config_status, tuple):
             CURRENT_MODULE = new_module
-            return RESET_MODULE
+            SITE_CONFIG = config_status[1]
+            return f"[{SUCCESS}] Module reset."
+            
+        if isinstance(config_status, dict):
+            CURRENT_MODULE = new_module
+            return f"[{WARNING}] Module reset, but previews site config not found!"
+        return f"[{ERROR}] Config not found! Set the 'manager'."
+    return f"[{WARNING}] Cancelled."
 
-        if isinstance(file_manager.load_config(), dict):
-            CURRENT_MODULE = new_module
-            return RESET_MODULE
-        return f'[{ERROR}] Config not found!'
-    return f'[{WARNING}] Cancelled.'
+
+def cmd_builder(program_name, module, site_config, cmd_input):
+    if module == 'None-module':
+        return f"{program_name}({styler.module_styler(module)}){cmd_input} "
+    return f"{program_name}({styler.module_styler(module)})\({styler.module_styler(site_config)}){cmd_input} "
 
 
 while True:
 
     # input_command = input(f"{NAME}({styler.module_styler(CURRENT_MODULE)}){MASTER_CMD_INPUT} ")
-    input_command = styler.console_user_input_styler(f"{NAME}({styler.module_styler(CURRENT_MODULE)}){MASTER_CMD_INPUT} ")
-    
+    # input_command = styler.console_user_input_styler(f"{NAME}({styler.module_styler(CURRENT_MODULE)}){styler.module_styler(module)}{MASTER_CMD_INPUT} ")
+    input_command = styler.console_user_input_styler(cmd_builder(NAME, CURRENT_MODULE, SITE_CONFIG, MASTER_CMD_INPUT))
+
     match input_command:
         case 'help':
             help_module.help(CURRENT_MODULE)
@@ -75,6 +89,7 @@ while True:
         case 'reset':
             if CURRENT_MODULE != 'None-module':
                 CURRENT_MODULE = 'None-module'
+                SITE_CONFIG = 'Config-not-selected'
                 print(RESET_MODULE)
             continue
         case 'exit':
@@ -118,12 +133,12 @@ while True:
                 print(rebuilder.prepare_rebuild())
             case '6':
                 print(rebuilder.excel_export())
-    elif CURRENT_MODULE == 'parser-manager':
+    elif CURRENT_MODULE == 'manager':
         match input_command:
             case '1':  # create config
-                print(file_manager.create_config())
+                print(config_manager.create_config())
             case '2':  # add site
-                config = file_manager.load_config(add_site=True)
+                config = config_manager.load_config(add_site=True)
                 print(config_manager.add_parsing_site(config))
                 # if validator.validate_unique_site()
                 # file_manager.save_config(config)
