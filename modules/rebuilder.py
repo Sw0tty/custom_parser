@@ -11,6 +11,7 @@ from bs4 import BeautifulSoup as bS
 from tkinter.filedialog import askopenfilename, askdirectory
 from tkinter import messagebox
 
+from classes.styler import Styler
 from classes.parent import MasterExcel
 from classes.modules_default import MainMethods
 from modules.parser.site_parser import URL_TEMPLATE
@@ -22,6 +23,7 @@ class Rebuilder(MainMethods, MasterExcel):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.styler = Styler()
         self.__file_path = None
         self.__file_name = None
         self.__already_rebuild = False
@@ -127,14 +129,3 @@ class Rebuilder(MainMethods, MasterExcel):
             return self.get_rebuild_status()
 
         return self._save_as_file(self.EXPORT_DATA, self.get_file_extension)
-
-
-if __name__ == '__main__':
-    from app_config.help_commands import REBUILDER_COMMANDS_DICT
-    rebuilder = Rebuilder(commands=REBUILDER_COMMANDS_DICT)
-
-    # os.chdir('')
-    print(rebuilder.set_selected_file())
-    print(rebuilder.prepare_rebuild())
-    # print(rebuilder.prepare_rebuild())
-    print(rebuilder.excel_export())

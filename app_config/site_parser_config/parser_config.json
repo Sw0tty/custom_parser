@@ -117,5 +117,17 @@
             },
             "JSON": ""
         }
+    },
+    "vk.com": {
+        "SECURE_CONNECTION": true,
+        "SITE_URL": "https://vk.com",
+        "PARSING_PAGES": {},
+        "EXPORT": {
+            "EXCEL": {
+                "EXCEL_COLUMNS_TITLE": [],
+                "ROW_COMMON_TITLES": []
+            },
+            "JSON": ""
+        }
     }
 }

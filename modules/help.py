@@ -35,7 +35,7 @@ class HelpModule:
                 '6': 'export rebuild in excel file',
                 'reset': 'reset current module',
             },
-            'parser-manager': {
+            'manager': {
                 '1': 'create new config',
                 '2': 'add parsing site',
                 'reset': 'reset current module',

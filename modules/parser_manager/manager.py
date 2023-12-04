@@ -37,23 +37,28 @@ class ConfigManager(FileManager, Validator):
         Return secure site status.
         """
         return 's' in url[:url.find(':')]
-     
+    
+    def get_info(self):
+        pass
+    
     def add_parsing_site(self, config_file):
         url = input("Input site url: ").strip()
         if url:
             
             domain = self.get_domain(url)
-            
-            if not self.validate_url(url):
-                return f'[{ERROR}] Invalid url!'
+
             if self.validate_unique_site(domain, config_file.keys()):
-                return f'[{ERROR}] Site already exist in config!'
+                return f"[{ERROR}] Site already exist in config!", None
+            if not self.validate_url(url):
+                return f"[{ERROR}] Invalid url!", None
+            
+            self.overwrite_env(domain)
             config_file[domain] = self.template
             config_file[domain]['SECURE_CONNECTION'] = self.check_secure(url)
             config_file[domain]['SITE_URL'] = self.get_main_url(url)
             self.save_config(config_file)
-            return f'[{SUCCESS}] Site added.'
-        return f'[{WARNING}] Cancelled.'
+            return f"[{SUCCESS}] Site added.", domain
+        return f"[{WARNING}] Cancelled.", None
 
     def connect_to_config(self):
         pass

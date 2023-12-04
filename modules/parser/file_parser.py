@@ -13,6 +13,7 @@ from tkinter.filedialog import askopenfilename, askdirectory
 from app_config.settings import price_styler, MAIN_PARSER_BLOCK
 from app_config.app_notices import ERROR, SUCCESS, CANCELLED, FILE_NAME, FILE_PATH, FILE_UNDEFINED, INFO, APPLY_STRING
 from classes.modules_default import ConfigSelect
+from classes.styler import Styler
 
 init()
 
@@ -25,6 +26,7 @@ class FileParser(MainMethods, MasterExcel, ConfigSelect):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.styler = Styler()
         self.__file_path = None
         self.__file_name = None
         self.__ready_to_export = False

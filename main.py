@@ -138,7 +138,12 @@ while True:
             case '1':  # create config
                 print(config_manager.create_config())
             case '2':  # add site
-                config = config_manager.load_config(add_site=True)
-                print(config_manager.add_parsing_site(config))
+                config = config_manager.load_config(new_site=True)
+                status, config_data = config_manager.add_parsing_site(config)
+                if config_data:
+                    config_manager.load_config()
+                    SITE_CONFIG = config_data
+                print(status)
+                
                 # if validator.validate_unique_site()
                 # file_manager.save_config(config)

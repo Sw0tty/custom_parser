@@ -1,3 +1,12 @@
+from app_config.app_notices import SUCCESS, ERROR, WARNING, INFO
+
+
+# class ConfigArgs:
+
+#     def __init__(self) -> None:
+#         self.main_site = None
+        
+
 class ConfigConnector:
     
     def __init__(self) -> None:
