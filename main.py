@@ -142,6 +142,7 @@ while True:
                 print(rebuilder.prepare_rebuild())
             case '6':
                 print(rebuilder.excel_export())
+
     elif CURRENT_MODULE == 'manager':
         match input_command:
             case '1':  # create config
@@ -154,11 +155,14 @@ while True:
                     SITE_CONFIG = config_data
                 print(status)
             case '3':  # add site page
-                pass
+                status, config_data = config_manager.add_parsing_page()
+                print(status)
             case '4':  # reset config
                 # print(config_manager.check_connection())
                 print(config_manager.reset())
                 SITE_CONFIG = config_manager.site_name
+            case '5':
+                print(config_manager.get_page_title('https://docs-python.ru/'))
                 
                 
                 # if validator.validate_unique_site()

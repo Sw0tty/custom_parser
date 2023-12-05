@@ -121,7 +121,22 @@
     "vk.com": {
         "SECURE_CONNECTION": true,
         "SITE_URL": "https://vk.com",
-        "PARSING_PAGES": {},
+        "PARSING_PAGES": {
+            "-TEST-": {
+                "PAGE_URL": "",
+                "MAIN_PARSE_INFO_BLOCK": "",
+                "INFO_BLOCKS": [],
+                "CUSTOM_FIELDS": [],
+                "PAGINATOR_CLASS_NAME": ""
+            },
+            "YouTube": {
+                "PAGE_URL": "",
+                "MAIN_PARSE_INFO_BLOCK": "",
+                "INFO_BLOCKS": [],
+                "CUSTOM_FIELDS": [],
+                "PAGINATOR_CLASS_NAME": ""
+            }
+        },
         "EXPORT": {
             "EXCEL": {
                 "EXCEL_COLUMNS_TITLE": [],
@@ -134,6 +149,33 @@
         "SECURE_CONNECTION": true,
         "SITE_URL": "https://info-comp.ru",
         "PARSING_PAGES": {},
+        "EXPORT": {
+            "EXCEL": {
+                "EXCEL_COLUMNS_TITLE": [],
+                "ROW_COMMON_TITLES": []
+            },
+            "JSON": ""
+        }
+    },
+    "www.youtube.com": {
+        "SECURE_CONNECTION": true,
+        "SITE_URL": "https://vk.com",
+        "PARSING_PAGES": {
+            "-TEST-": {
+                "PAGE_URL": "",
+                "MAIN_PARSE_INFO_BLOCK": "",
+                "INFO_BLOCKS": [],
+                "CUSTOM_FIELDS": [],
+                "PAGINATOR_CLASS_NAME": ""
+            },
+            "YouTube": {
+                "PAGE_URL": "",
+                "MAIN_PARSE_INFO_BLOCK": "",
+                "INFO_BLOCKS": [],
+                "CUSTOM_FIELDS": [],
+                "PAGINATOR_CLASS_NAME": ""
+            }
+        },
         "EXPORT": {
             "EXCEL": {
                 "EXCEL_COLUMNS_TITLE": [],

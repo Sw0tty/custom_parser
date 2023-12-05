@@ -2,8 +2,11 @@
 Changing parser_config.
 """
 import json
+import requests
+from bs4 import BeautifulSoup as bs
 
 from app_config.app_notices import SUCCESS, ERROR, WARNING, INFO
+from app_config.settings import PARSER_HEADERS
 from modules.parser_manager.validator import Validator
 from modules.parser_manager.connector import ConfigConnector
 from modules.parser_manager.file_manager import FileManager
@@ -41,6 +44,11 @@ class ConfigManager(FileManager, Validator):
         """
         return 's' in url[:url.find(':')]
     
+    def get_page_title(self, url):
+        response = requests.get(url, headers=PARSER_HEADERS)
+        soup = bs(response.text, 'html.parser')
+        return soup.find('title').text.strip()
+    
     def add_parsing_site(self, config_file):
         url = input("Input site url: ").strip()
         if url:
@@ -63,18 +71,25 @@ class ConfigManager(FileManager, Validator):
     def connect_to_config(self):
         pass
 
-    def add_parsing_page(self, site_config) -> tuple:
+    def add_parsing_page(self) -> tuple:
+        if not self.connected:
+            return f"[{ERROR}] Not connected to config file!"
+        
         url = input("Input site page url: ").strip()
+
         if url:
             domain = self.get_domain(url)
-
-            if self.validate_unique_site(domain, site_config['PARSING_PAGES'].keys()):
+            if domain != self.site_name:
+                return f"[{ERROR}] Site page url not from this site!", None
+            
+            if self.validate_unique_site(domain, self.site_config['PARSING_PAGES'].keys()):
                 return f"[{ERROR}] Site page already exist in site config!", None
             if not self.validate_url(url):
                 return f"[{ERROR}] Invalid url!", None
-            site_config['PARSING_PAGES']["???"] = self.page_template
-            self.save_config(site_config)
-            return f"[{SUCCESS}] Site page added.", domain
+            self.site_config['PARSING_PAGES'][self.get_page_title(url)] = self.page_template
+            self.config[domain] = self.site_config
+            self.save_config(self.config)
+            return f"[{SUCCESS}] Site page added.", "-TEST-"
         return f"[{WARNING}] Cancelled.", None
     
     def connect(self, config, site_config, site_name):
@@ -89,7 +104,7 @@ class ConfigManager(FileManager, Validator):
 
     def reset(self):
         config_dict = {str(key[0] + 1): key[1] for key in enumerate(self.config.keys())}
-        print(config_dict)
+
         for site in config_dict.keys():
             print(f"\t{site} - {config_dict[site]}")
         answer = input("Print a number of site name: ").strip()
