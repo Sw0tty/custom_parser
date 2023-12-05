@@ -55,15 +55,24 @@ def reset_module():
         #     CURRENT_MODULE = new_module
         #     return RESET_MODULE
         
-        config_status = config_manager.load_config()
-        if isinstance(config_status, tuple):
+        config = config_manager.load_config()
+        if config:
             CURRENT_MODULE = new_module
-            SITE_CONFIG = config_status[1]
-            return f"[{SUCCESS}] Module reset."
-            
-        if isinstance(config_status, dict):
-            CURRENT_MODULE = new_module
+            site_config = config_manager.load_site_config(config)
+            if site_config[0]:
+                config_manager.connect(config, site_config=site_config[0], site_name=site_config[1])
+                SITE_CONFIG = config_manager.site_name
+                return f"[{SUCCESS}] Module reset."
             return f"[{WARNING}] Module reset, but previews site config not found!"
+        
+        # if isinstance(config_status, tuple):
+        #     CURRENT_MODULE = new_module
+        #     SITE_CONFIG = config_status[1]
+        #     return f"[{SUCCESS}] Module reset."
+            
+        # if isinstance(config_status, dict):
+        #     CURRENT_MODULE = new_module
+        #     return f"[{WARNING}] Module reset, but previews site config not found!"
         return f"[{ERROR}] Config not found! Set the 'manager'."
     return f"[{WARNING}] Cancelled."
 
@@ -138,12 +147,19 @@ while True:
             case '1':  # create config
                 print(config_manager.create_config())
             case '2':  # add site
-                config = config_manager.load_config(new_site=True)
+                config = config_manager.load_config()
                 status, config_data = config_manager.add_parsing_site(config)
                 if config_data:
                     config_manager.load_config()
                     SITE_CONFIG = config_data
                 print(status)
+            case '3':  # add site page
+                pass
+            case '4':  # reset config
+                # print(config_manager.check_connection())
+                print(config_manager.reset())
+                SITE_CONFIG = config_manager.site_name
+                
                 
                 # if validator.validate_unique_site()
                 # file_manager.save_config(config)

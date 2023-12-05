@@ -45,17 +45,30 @@ class FileManager(Template):
             json.dump(self.template, config_file)
         return f'[{SUCCESS}] Config file created.'
     
-    def load_config(self, new_site=False):
+    def load_config(self, config_file=False, site_config=False):
         if self.file_exist():
             with open(r'app_config\site_parser_config\parser_config.json', 'r', encoding='utf-8') as config_file:
                 config = json.load(config_file)
-                if new_site:
-                    return config
-                site_config = config.get(self.default_site_name, None)
-                if site_config:
-                    return site_config, self.default_site_name
                 return config
+                if config_file:
+                    return config
+                if site_config:
+                    site_config = config.get(self.default_site_name, None)
+                    if site_config:
+                        return site_config, self.default_site_name
+                    return config, None
+                # if site_config:
+                #     return site_config, self.default_site_name
+                # if new_site:
+                #     return config
+                # site_config = config.get(self.default_site_name, None)
+                # if site_config:
+                #     return site_config, self.default_site_name
+                # return config
         return None
+    
+    def load_site_config(self, config):
+        return config.get(self.default_site_name, None), self.default_site_name
 
     # def overwrite_template(self, is_valid):
     #     if not self.file_exist:

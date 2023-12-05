@@ -129,5 +129,17 @@
             },
             "JSON": ""
         }
+    },
+    "info-comp.ru": {
+        "SECURE_CONNECTION": true,
+        "SITE_URL": "https://info-comp.ru",
+        "PARSING_PAGES": {},
+        "EXPORT": {
+            "EXCEL": {
+                "EXCEL_COLUMNS_TITLE": [],
+                "ROW_COMMON_TITLES": []
+            },
+            "JSON": ""
+        }
     }
 }

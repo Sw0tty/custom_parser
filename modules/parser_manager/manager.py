@@ -3,9 +3,9 @@ Changing parser_config.
 """
 import json
 
-from app_config.app_notices import SUCCESS, ERROR, WARNING
+from app_config.app_notices import SUCCESS, ERROR, WARNING, INFO
 from modules.parser_manager.validator import Validator
-from modules.parser_manager.template import Template
+from modules.parser_manager.connector import ConfigConnector
 from modules.parser_manager.file_manager import FileManager
 # from classes.modules_default import HelpMethod
 
@@ -14,7 +14,10 @@ class ConfigManager(FileManager, Validator):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.connection = None
+        self.connected = None
+        self.config = None
+        self.site_config = None
+        self.site_name = None
         # self.config = self.load_config()
     
     @staticmethod
@@ -38,9 +41,6 @@ class ConfigManager(FileManager, Validator):
         """
         return 's' in url[:url.find(':')]
     
-    def get_info(self):
-        pass
-    
     def add_parsing_site(self, config_file):
         url = input("Input site url: ").strip()
         if url:
@@ -63,9 +63,46 @@ class ConfigManager(FileManager, Validator):
     def connect_to_config(self):
         pass
 
-    def add_parsing_page(self):
-        pass
+    def add_parsing_page(self, site_config) -> tuple:
+        url = input("Input site page url: ").strip()
+        if url:
+            domain = self.get_domain(url)
 
+            if self.validate_unique_site(domain, site_config['PARSING_PAGES'].keys()):
+                return f"[{ERROR}] Site page already exist in site config!", None
+            if not self.validate_url(url):
+                return f"[{ERROR}] Invalid url!", None
+            site_config['PARSING_PAGES']["???"] = self.page_template
+            self.save_config(site_config)
+            return f"[{SUCCESS}] Site page added.", domain
+        return f"[{WARNING}] Cancelled.", None
+    
+    def connect(self, config, site_config, site_name):
+        if config:
+            self.config = config
+            if site_config:
+                self.site_config = site_config
+                self.site_name = site_name
+                self.connected = True
+            return f"[{SUCCESS}] Config reset."
+        return f"[{ERROR}] "
+
+    def reset(self):
+        config_dict = {str(key[0] + 1): key[1] for key in enumerate(self.config.keys())}
+        print(config_dict)
+        for site in config_dict.keys():
+            print(f"\t{site} - {config_dict[site]}")
+        answer = input("Print a number of site name: ").strip()
+        if answer and answer in config_dict.keys():
+            self.overwrite_env(config_dict[answer])
+            return self.connect(self.config, self.config[config_dict[answer]], config_dict[answer])
+        return f"[{WARNING}] Cancelled."
+    
+    def check_connection(self):
+        if self.connected:
+            return f"[{INFO}] Now connected to '{self.site_name}'."
+        return f"[{ERROR}] No connected to any site config."
+    
     # def load_template(self):
     #     with open(r'path', 'r', 'utf-8') as config:
     #         config_file = json.loads(config)
