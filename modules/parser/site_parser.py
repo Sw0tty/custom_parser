@@ -114,12 +114,12 @@ class SiteParser(MainMethods, MasterExcel):
         return self.to_empty_list()
     
     def add_common_title(self):
-        answer = self.styler.console_user_input_styler("Add common title? [y/n]\nAnswer: ")
+        answer = self.styler.console_input_styler("Add common title? [y/n]\nAnswer: ")
         if answer not in ['y', 'n']:
             return CANCELLED
         if answer == 'n':
             return self.parse_site()
-        title = self.styler.console_user_input_styler("Input title: ")
+        title = self.styler.console_input_styler("Input title: ")
         if not title:
             return f'[{ERROR}] Empty string!'
         self.EXPORT_DATA_NEW.append([title])
@@ -133,13 +133,13 @@ class SiteParser(MainMethods, MasterExcel):
 
     def to_empty_list(self):
         if self.EXPORT_DATA_NEW:
-            answer = self.styler.console_user_input_styler("List is not empty. Clear?[Y/n]\nAnswer: ")
+            answer = self.styler.console_input_styler("List is not empty. Clear?[Y/n]\nAnswer: ")
             if answer not in ['Y', 'n'] or answer == 'n':
                 return CANCELLED
             self.EXPORT_DATA_NEW.clear()
             print(f'[{SUCCESS}] Data is cleared!')
 
-        answer = self.styler.console_user_input_styler("Add columns titles?[y/n]\nAnswer: ")
+        answer = self.styler.console_input_styler("Add columns titles?[y/n]\nAnswer: ")
         if answer not in ['y', 'n']:
             return CANCELLED
         if answer == 'n':
@@ -159,14 +159,14 @@ class SiteParser(MainMethods, MasterExcel):
         return input('Site url: ')
 
     def parse_site(self):
-        answer = self.styler.console_user_input_styler("""Print 'default' to parse default settings. 'search' to set search string.\nAnswer: """)
+        answer = self.styler.console_input_styler("""Print 'default' to parse default settings. 'search' to set search string.\nAnswer: """)
 
         if answer == 'default':
             url = self.get_url()
         elif answer == 'extra':
             url = self.parse_extra_site_page()
         elif answer == 'search':
-            search_str = self.styler.console_user_input_styler("What's searching?\nAnswer: ")
+            search_str = self.styler.console_input_styler("What's searching?\nAnswer: ")
             if search_str:
                 self.searching_string = search_str
                 url = self.get_custom_url(self.searching_string)

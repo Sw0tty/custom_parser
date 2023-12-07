@@ -4,25 +4,33 @@ Style console commands, parsing strings.
 from colorama import Fore, Style
 
 from app_config.app_notices import ERROR
-from app_config.settings import CURRENT_MODULE, SITE_CONFIG
+from app_config.settings import DEFAULT_MODULE, DEFAULT_SITE_CONFIG
 from classes.exceptions import TooManyArguments, UnexpectedSideParameter
 
 
 class Styler:
 
     @staticmethod
-    def reset_all_styles():
+    def reset_all_styles() -> None:
         print("\x1B[0m" + Fore.RESET, end='', flush=True)
 
     @staticmethod
-    def module_styler(module):
+    def module_styler(module: str) -> str:
         """
         Colored selected module.
         Needed in console_version.
         """
-        if module == CURRENT_MODULE or module == SITE_CONFIG:
+        if module == DEFAULT_MODULE or module == DEFAULT_SITE_CONFIG:
             return Fore.RED + module + Style.RESET_ALL
         return Fore.MAGENTA + module + Style.RESET_ALL
+    
+    def cmd_builder(self, program_name, module, site_config, cmd_input) -> str:
+        """
+        Build cmd logic view.
+        """
+        if module == DEFAULT_MODULE:
+            return f"{program_name}({self.module_styler(module)}){cmd_input} "
+        return f"{program_name}({self.module_styler(module)})\({self.module_styler(site_config)}){cmd_input} "
     
     @staticmethod
     def side_taker_styler(string, side):
@@ -154,11 +162,11 @@ class Styler:
         except TooManyArguments:
             return f'[{ERROR}] Too many given arguments to unpack (expected 1-2)'
         
-    def console_user_input_styler(self, help_string):
+    def console_input_styler(self, help_string):
         answer = input(help_string + Fore.GREEN + "\x1B[3m").strip()
         self.reset_all_styles()
         return answer
-    
+
     def console_help_strings_styler(self, string):
         style_string = Fore.GREEN + "\x1B[3m" + string
         

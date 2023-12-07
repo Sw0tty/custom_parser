@@ -9,7 +9,7 @@ class HelpModule:
         self.help_dict = {
             'None-module': {
                 'set': 'set module',
-                'exit': 'close master',
+                'exit': 'close parser',
             },
             'file-parser': {
                 '1': 'get current parse file',
@@ -38,6 +38,7 @@ class HelpModule:
             'manager': {
                 '1': 'create new config',
                 '2': 'add parsing site',
+                '3': 'add parsing site page',
                 'reset': 'reset current module',
             }
         }

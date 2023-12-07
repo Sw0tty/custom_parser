@@ -39,10 +39,10 @@ class FileManager(Template):
             json.dump(config_data, config_file)
     
     def create_config(self) -> str:
-        if self.file_exist:
-            return f'[{ERROR}] File exist!'
+        if self.file_exist():
+            return f'[{ERROR}] File already exist!'
         with open(r'app_config\site_parser_config\parser_config.json', 'w', encoding='utf-8') as config_file:
-            json.dump(self.template, config_file)
+            json.dump({}, config_file)
         return f'[{SUCCESS}] Config file created.'
     
     def load_config(self, config_file=False, site_config=False):
