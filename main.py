@@ -146,13 +146,14 @@ while True:
             case '2':  # add site
                 config = config_manager.load_config()
                 status, config_data = config_manager.add_parsing_site(config)
-                if config_data:
-                    config_manager.load_config()
-                    SITE_CONFIG = config_data
+                # if config_data:
+                #     config_manager.load_config()
+                #     SITE_CONFIG = config_data
                 print(status)
             case '3':  # add site page
                 status, config_data = config_manager.add_parsing_page()
                 print(status)
+                print(config_data)
             case '4':  # reset config
                 # print(config_manager.check_connection())
                 print(config_manager.set_config())

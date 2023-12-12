@@ -10,6 +10,13 @@ from classes.exceptions import TooManyArguments, UnexpectedSideParameter
 
 class Styler:
 
+    def __init__(self) -> None:
+        self.styler_dict = {
+            'price': self.price_styler,
+            'side_taker': self.side_taker_styler,
+            'remove_extra': self.remove_extra_chars,
+        }
+
     @staticmethod
     def reset_all_styles() -> None:
         print("\x1B[0m" + Fore.RESET, end='', flush=True)
@@ -171,9 +178,6 @@ class Styler:
         style_string = Fore.GREEN + "\x1B[3m" + string
         
         return style_string
-    
-    def get_main_url(self):
-        pass
 
     @staticmethod
     def exclude_data_styler(checked_data):

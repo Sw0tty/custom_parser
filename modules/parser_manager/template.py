@@ -27,7 +27,7 @@ class Template:
             "CUSTOM_FIELDS": [],
             "PAGINATOR_CLASS_NAME": ""
         }
-        self.info_block_template = ["", "", ""]
+        self.info_block_template = ["", ["", ""]]  # class_name, stylers_names
         self.count_main_keys = len(self.template.keys())
 
 
@@ -35,7 +35,8 @@ if __name__ == '__main__':
     template = Template()
     print(template.count_main_keys)
 
-exclude_words = ["для нужд", "томограф", "для ООО", "мебел", "вентиляц", "видеонаб", "видеооб", "планшет", "проектор", "медицинского", "тонометр", "водян", "вентилятор"]
+exclude_words = ["для нужд", "медицинских издел", "допплерограф", "томограф", "для ООО", "мебел", "вентиляц",
+                 "видеонаб", "видеооб", "планшет", "проектор", "медицинского", "тонометр", "водян", "вентилятор", "радиостанц", "гликем"]
 
 # Оказание услуг по монтажу водяных тепловых вентиляторов с поставляемым товаром
 # self.template = {

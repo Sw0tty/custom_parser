@@ -58,10 +58,25 @@ class ConfigManager(FileManager, Validator):
             return self.site_name
         return DEFAULT_SITE_CONFIG
     
-    def get_page_title(self, url) -> str:
+    @staticmethod
+    def get_response_data(url):
         response = requests.get(url, headers=PARSER_HEADERS)
-        soup = bs(response.text, 'html.parser')
-        return soup.find('title').text.strip()
+        return response
+        return bs(response.text, 'html.parser')
+    
+    def get_page_title(self, response_data) -> str:
+        # response = requests.get(url, headers=PARSER_HEADERS)
+        response_data = bs(response_data.text, 'html.parser')
+        return response_data.find('title').text.strip()
+    
+    @staticmethod
+    def get_paginate_class(response_data: str):
+        if "pagin" in response_data:
+            middle_index = response_data.index("pagin")
+            start_index = middle_index - (response_data[middle_index::-1].index(chr(34)) - 1)
+            end_index = start_index + response_data[middle_index:].index(chr(34))
+            return response_data[start_index:end_index]
+        return None
     
     def add_parsing_site(self, config_file):
         url = input("Input site url: ").strip()
@@ -79,6 +94,7 @@ class ConfigManager(FileManager, Validator):
             config_file[domain]['SECURE_CONNECTION'] = self.check_secure(url)
             config_file[domain]['SITE_URL'] = self.get_main_url(url)
             self.save_config(config_file)
+            self.connect(self.config, config_file[domain], domain)
             return f"[{SUCCESS}] Site added.", domain
         return f"[{WARNING}] Cancelled.", None
 
@@ -89,15 +105,21 @@ class ConfigManager(FileManager, Validator):
         url = input("Input site page url: ").strip()
 
         if url:
+            if not self.validate_url(url):
+                return f"[{ERROR}] Invalid url!", None
+            
             domain = self.get_domain(url)
             if domain != self.site_name:
                 return f"[{ERROR}] Site page url not from this site!", None
 
-            page_title = self.get_page_title(url)
+            response_data = self.get_response_data(url)
+            page_title = self.get_page_title(response_data)
+            paginate_class = self.get_paginate_class(response_data=response_data.text)
 
             if self.validate_unique_site(page_title, self.site_config['PARSING_PAGES'].keys()):
                 answer = self.styler.console_input_styler("Site page already exist in site config! Add anyway? [y/n]: ")
                 if answer != 'y':
+                    response_data.clear()
                     return f"[{WARNING}] Cancelled.", None
                 
                 count = 0
@@ -108,12 +130,14 @@ class ConfigManager(FileManager, Validator):
 
                 page_title = f"{page_title}_{count}"
                 # return f"[{ERROR}] Site page already exist in site config!", None
-            if not self.validate_url(url):
-                return f"[{ERROR}] Invalid url!", None
+
             self.site_config['PARSING_PAGES'][page_title] = self.page_template
+            self.site_config['PARSING_PAGES'][page_title]['PAGE_URL'] = url
+            self.site_config['PARSING_PAGES'][page_title]['PAGINATOR_CLASS_NAME'] = paginate_class
             self.config[domain] = self.site_config
             self.save_config(self.config)
-            return f"[{SUCCESS}] Site page added.", "-TEST-"
+            del response_data
+            return f"[{SUCCESS}] Site page added.", page_title
         return f"[{WARNING}] Cancelled.", None
     
     def connect(self, config, site_config, site_name):
@@ -173,4 +197,23 @@ class ConfigManager(FileManager, Validator):
     #     if self.connected:
     #         return f"[{INFO}] Now loaded config for '{self.site_name}'."
     #     return f"[{ERROR}] No loaded any site config."
-    
+
+if __name__ == '__main__':
+    manager = ConfigManager()
+    url = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html'
+    response_data = manager.get_response_data(url)
+    print(response_data)
+    # print(manager.get_paginate_class(response_data))
+    # print("pagin" in response_data.text)
+    paginator = manager.get_paginate_class(response_data.text)
+    print(paginator)
+    # if "pagin" in response_data.text:
+    #     middle_index = response_data.text.index("pagin")
+    #     start_index = middle_index - (response_data.text[middle_index::-1].index(chr(34)) + 1)       
+    #     end_index = start_index + response_data.text[middle_index:].index(chr(34))
+    #     paginate_class = response_data.text[start_index:end_index]
+    #     print(paginate_class)
+    # for i in manager.get_paginate_class(response_data):
+    #     print(i.text)
+
+

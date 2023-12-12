@@ -1,5 +1,5 @@
 {
-    "zakupki.gov.ru": {
+    "zakupki.gov.ru222": {
         "SECURE_CONNECTION": "True",
         "PARSING_PAGES": {
             "\u0417\u0430\u043a\u0443\u043f\u043a\u0438": {
@@ -156,6 +156,13 @@
                 "INFO_BLOCKS": [],
                 "CUSTOM_FIELDS": [],
                 "PAGINATOR_CLASS_NAME": ""
+            },
+            "\u0417\u0430\u043a\u0443\u043f\u043a\u0438": {
+                "PAGE_URL": "https://zakupki.gov.ru/epz/order/extendedsearch/results.html",
+                "MAIN_PARSE_INFO_BLOCK": "",
+                "INFO_BLOCKS": [],
+                "CUSTOM_FIELDS": [],
+                "PAGINATOR_CLASS_NAME": ""
             }
         },
         "EXPORT": {
@@ -195,6 +202,26 @@
                 "INFO_BLOCKS": [],
                 "CUSTOM_FIELDS": [],
                 "PAGINATOR_CLASS_NAME": ""
+            }
+        },
+        "EXPORT": {
+            "EXCEL": {
+                "EXCEL_COLUMNS_TITLE": [],
+                "ROW_COMMON_TITLES": []
+            },
+            "JSON": ""
+        }
+    },
+    "zakupki.gov.ru": {
+        "SECURE_CONNECTION": true,
+        "SITE_URL": "https://zakupki.gov.ru",
+        "PARSING_PAGES": {
+            "\u0417\u0430\u043a\u0443\u043f\u043a\u0438": {
+                "PAGE_URL": "https://zakupki.gov.ru/epz/order/extendedsearch/results.html",
+                "MAIN_PARSE_INFO_BLOCK": "",
+                "INFO_BLOCKS": [],
+                "CUSTOM_FIELDS": [],
+                "PAGINATOR_CLASS_NAME": "paginator-block"
             }
         },
         "EXPORT": {
