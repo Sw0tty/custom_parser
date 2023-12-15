@@ -228,6 +228,9 @@ class SiteParser(MainMethods, MasterExcel):
                 if class_key != 'org_href' and class_key != 'end_date':
                     _ = _.text.strip()
 
+                    if class_key == 'name':
+                        taking = self.styler.exclude_data_styler(_.lower())
+
                     if class_key == 'price':
                         _ = self.styler.price_styler(_, False)
 
@@ -249,7 +252,8 @@ class SiteParser(MainMethods, MasterExcel):
 
                 values_list.append(_)
 
-            self.EXPORT_DATA_NEW.append(values_list.copy())
+            if taking:
+                self.EXPORT_DATA_NEW.append(values_list.copy())
 
 
 if __name__ == '__main__':

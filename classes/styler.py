@@ -6,6 +6,7 @@ from colorama import Fore, Style
 from app_config.app_notices import ERROR
 from app_config.settings import DEFAULT_MODULE, DEFAULT_SITE_CONFIG
 from classes.exceptions import TooManyArguments, UnexpectedSideParameter
+from modules.parser_manager.template import exclude_words
 
 
 class Styler:
@@ -181,11 +182,10 @@ class Styler:
 
     @staticmethod
     def exclude_data_styler(checked_data):
-        some_words = ['для нужд',]
-        for exclusion_word in some_words:
+        for exclusion_word in exclude_words:
             if exclusion_word in checked_data:
-                return True
-        return False
+                return False
+        return True
 
 
 if __name__ == '__main__':
