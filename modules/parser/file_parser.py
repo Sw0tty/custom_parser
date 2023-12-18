@@ -90,6 +90,9 @@ class FileParser(MainMethods, MasterExcel, ConfigSelect):
                         _ = _.text.strip()
                         _ = _[:-1].rstrip() if class_key == 'price' else _
 
+                    if class_key == 'name':
+                        text = _.lower()
+
                     if class_key == 'purchases':
                         _ = _[0:5] if _[0] == '4' else _[0:6]
 
@@ -102,7 +105,8 @@ class FileParser(MainMethods, MasterExcel, ConfigSelect):
 
                     if class_key == 'org_href':
                         values_list.append('')
-                        values_list.append(3)
+                        values_list.append(self.styler.set_status_code(text))
+                        # values_list.append(3)
                         children = _.findChildren('a')
                         _ = children[0].get('href')
 

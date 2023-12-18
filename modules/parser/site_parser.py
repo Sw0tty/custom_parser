@@ -26,7 +26,7 @@ URL_TEMPLATE = f'''https://zakupki.gov.ru/epz/order/extendedsearch/results.html?
 
 init()
 
-DAYS_AGO = 2
+DAYS_AGO = 3
 SEARCH = ''
 DEFAULT_RESULTS = 50
 DEFAULT_PAGE_NUMBER = 1
@@ -64,13 +64,6 @@ class SiteParser(MainMethods, MasterExcel):
         if pages:
             return soup, int(pages[-1].text)
         return soup
-    
-    # @staticmethod
-    # def get_domain(url: str) -> str:
-    #     """
-    #     Return the site domain.
-    #     """
-    #     return url[url.find('/') + 2:url.find('/', 8)]
     
     @property
     def request_results(self):
@@ -229,7 +222,8 @@ class SiteParser(MainMethods, MasterExcel):
                     _ = _.text.strip()
 
                     if class_key == 'name':
-                        taking = self.styler.exclude_data_styler(_.lower())
+                        wrong_data = self.styler.exclude_data_styler(_.lower())
+                        text = _.lower()
 
                     if class_key == 'price':
                         _ = self.styler.price_styler(_, False)
@@ -244,7 +238,8 @@ class SiteParser(MainMethods, MasterExcel):
 
                 if class_key == 'org_href':
                     values_list.append('')
-                    values_list.append(3)
+                    values_list.append(self.styler.set_status_code(text))
+                    # values_list.append(3)  # New method
                     children = _.findChildren('a')
                     children = children[0].get('href')
                     _ = f'https://zakupki.gov.ru{children}'
@@ -252,7 +247,7 @@ class SiteParser(MainMethods, MasterExcel):
 
                 values_list.append(_)
 
-            if taking:
+            if not wrong_data:
                 self.EXPORT_DATA_NEW.append(values_list.copy())
 
 
