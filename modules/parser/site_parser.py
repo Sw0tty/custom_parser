@@ -175,7 +175,7 @@ class SiteParser(MainMethods, MasterExcel):
         if not parse_result:
             del self.searching_string
             self.EXPORT_DATA_NEW.append(['Ничего'])
-            return None
+            return f'[{INFO}] Nothing found.'
             # return f'[{INFO}] For request {search_str} nothing found.'
 
         if isinstance(parse_result, bs):

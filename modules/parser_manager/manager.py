@@ -94,7 +94,7 @@ class ConfigManager(FileManager, Validator):
             config_file[domain]['SECURE_CONNECTION'] = self.check_secure(url)
             config_file[domain]['SITE_URL'] = self.get_main_url(url)
             self.save_config(config_file)
-            self.connect(self.config, config_file[domain], domain)
+            self.connect(self.load_config(), config_file[domain], domain)
             return f"[{SUCCESS}] Site added.", domain
         return f"[{WARNING}] Cancelled.", None
 
@@ -202,11 +202,76 @@ if __name__ == '__main__':
     manager = ConfigManager()
     url = 'https://zakupki.gov.ru/epz/order/extendedsearch/results.html'
     response_data = manager.get_response_data(url)
-    print(response_data)
+    response_data = bs(response_data.text, 'html.parser')
+
+    div = response_data.find('div')
+
+    # print(div.find_next('div').text)
+
+    divs = response_data.find_all('div', class_=True)
+    classes = []
+
+    for div in divs:
+        classes.append(" ".join(div.attrs['class']))
+    
+    classes_set = list(set(classes))
+
+    classes_dict = dict({class_: classes.count(class_) for class_ in classes_set})
+
+    classes_dict = {k: v for k, v in sorted(classes_dict.items(), key=lambda item: item[1])}
+    # print(classes_dict)
+    # for i in classes_dict.items():
+    #     print(i)
+    
+
+    for class_ in classes_dict:
+        if classes_dict[class_] == 1:
+            try:
+                div = response_data.find('div', class_=class_)
+                
+                next_div = div.find_next('div')
+                if classes_dict[" ".join(next_div.attrs['class'])] >= 10:
+                    print(class_, "===", " ".join(next_div.attrs['class']))
+
+            except KeyError:
+                pass
+            
+        
+        # print(div.attrs['class'])
+        # if classes_dict[" ".join(parent_div.attrs['class'])] == 1:
+        #     print(" ".join(parent_div.attrs['class']))
+            # div = response_data.find('div', class_=class_)
+            # try:
+            #     next_div = " ".join(div.find_next('div').attrs['class'])
+            #     if classes_dict[next_div] >= 10:
+            #         print(class_, "===", next_div)
+            # except KeyError:
+            #     pass
+
+
+
+
+
+    # for class_ in classes_dict:
+    #     if classes_dict[class_] == 1:
+    #         print(classes_dict[class_])
+    #         div = response_data.find('div', class_=class_)
+    #         try:
+    #             next_div = " ".join(div.find_next('div').attrs['class'])
+    #             if classes_dict[next_div] >= 10:
+    #                 print(class_, "===", next_div)
+    #         except KeyError:
+    #             pass
+        # if classes_dict[parent_div] == 1:
+        #     print(classes_dict[parent_div])
+
+
+
+
     # print(manager.get_paginate_class(response_data))
     # print("pagin" in response_data.text)
-    paginator = manager.get_paginate_class(response_data.text)
-    print(paginator)
+    # paginator = manager.get_paginate_class(response_data.text)
+    # print(paginator)
     # if "pagin" in response_data.text:
     #     middle_index = response_data.text.index("pagin")
     #     start_index = middle_index - (response_data.text[middle_index::-1].index(chr(34)) + 1)       
