@@ -43,40 +43,6 @@ if datetime.datetime.today().weekday() + 1 == 5:
 print(f"""[{INFO}] Print {HELP} for call list commands.""")
 
 
-# def reset_module():
-#     global CURRENT_MODULE
-#     global SITE_CONFIG
-#     print("All modules:")
-#     for module in MODULES.keys():
-#         print(f'\t{styler.module_styler(module)} - {MODULES[module]}')
-#     new_module = styler.console_input_styler("Print module: ").lower()
-#     if new_module and new_module in MODULES:
-#         # if new_module == 'manager':
-#         #     CURRENT_MODULE = new_module
-#         #     return RESET_MODULE
-        
-#         config = config_manager.load_config()
-#         if config:
-#             CURRENT_MODULE = new_module
-#             site_config = config_manager.load_site_config(config)
-#             if site_config[0]:
-#                 config_manager.connect(config, site_config=site_config[0], site_name=site_config[1])
-#                 SITE_CONFIG = config_manager.site_name
-#                 return f"[{SUCCESS}] Module reset."
-#             return f"[{WARNING}] Module reset, but previews site config not found!"
-        
-#         # if isinstance(config_status, tuple):
-#         #     CURRENT_MODULE = new_module
-#         #     SITE_CONFIG = config_status[1]
-#         #     return f"[{SUCCESS}] Module reset."
-            
-#         # if isinstance(config_status, dict):
-#         #     CURRENT_MODULE = new_module
-#         #     return f"[{WARNING}] Module reset, but previews site config not found!"
-#         return f"[{ERROR}] Config not found! Set the 'manager'."
-#     return f"[{WARNING}] Cancelled."
-
-
 while True:
 
     input_command = styler.console_input_styler(
