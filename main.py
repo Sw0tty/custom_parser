@@ -111,21 +111,22 @@ while True:
                 print(config_manager.create_config())
             case '2':  # add site
                 config = config_manager.load_config()
-                status, config_data = config_manager.add_parsing_site(config)
+                status = config_manager.add_parsing_site(config)
                 # if config_data:
                 #     config_manager.load_config()
                 #     SITE_CONFIG = config_data
                 print(status)
             case '3':  # add site page
-                status, config_data = config_manager.add_parsing_page()
+                status = config_manager.add_parsing_page()
                 print(status)
-                print(config_data)
+                # print(config_data)
             case '4':  # reset config
                 # print(config_manager.check_connection())
                 print(config_manager.set_config())
                 SITE_CONFIG = config_manager.site_name
             case '5':
-                print(config_manager.get_page_title('https://docs-python.ru/'))
+                print(config_manager.delete_parsing_site())
+                # print(config_manager.get_page_title('https://docs-python.ru/'))
                 
                 
                 # if validator.validate_unique_site()

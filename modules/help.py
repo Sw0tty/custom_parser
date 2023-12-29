@@ -33,7 +33,8 @@ class HelpModule:
                 '1': 'create new config',
                 '2': 'add parsing site',
                 '3': 'add parsing site page',
-                '4': 'set site config from file',                
+                '4': 'set site config from file',
+                '5': 'delete site config from file',                
             }
         }
 

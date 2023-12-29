@@ -66,7 +66,7 @@ class ConfigManager(FileManager, Validator):
     
     def get_page_title(self, response_data) -> str:
         # response = requests.get(url, headers=PARSER_HEADERS)
-        response_data = bs(response_data.text, 'html.parser')
+        # response_data = bs(response_data.text, 'html.parser')
         return response_data.find('title').text.strip()
     
     @staticmethod
@@ -78,16 +78,31 @@ class ConfigManager(FileManager, Validator):
             return response_data[start_index:end_index]
         return None
     
-    def add_parsing_site(self, config_file):
+    
+    def find_info_block_class(self, response_data, classes_dict, previews_classes, blocks_on_page):
+        if len(previews_classes) > 1:
+            supposed_main_block_classes = []
+            for class_ in previews_classes:
+                try:
+                    blocks_class = response_data.find('div', class_=class_)
+                    main_class = blocks_class.find_next('div')
+                    if classes_dict[" ".join(main_class.attrs['class'])] == blocks_on_page:
+                        supposed_main_block_classes.append(" ".join(main_class.attrs['class']))
+                except KeyError:
+                    continue
+            return self.find_info_block_class(response_data, classes_dict, supposed_main_block_classes, blocks_on_page)
+        return previews_classes[0]
+    
+    def add_parsing_site(self, config_file) -> str:
         url = input("Input site url: ").strip()
         if url:
             
             domain = self.get_domain(url)
 
             if self.validate_unique_site(domain, config_file.keys()):
-                return f"[{ERROR}] Site already exist in config!", None
+                return f"[{ERROR}] Site already exist in config!"
             if not self.validate_url(url):
-                return f"[{ERROR}] Invalid url!", None
+                return f"[{ERROR}] Invalid url!"
             
             self.overwrite_env(domain)
             config_file[domain] = self.template
@@ -95,10 +110,10 @@ class ConfigManager(FileManager, Validator):
             config_file[domain]['SITE_URL'] = self.get_main_url(url)
             self.save_config(config_file)
             self.connect(self.load_config(), config_file[domain], domain)
-            return f"[{SUCCESS}] Site added.", domain
-        return f"[{WARNING}] Cancelled.", None
+            return f"[{SUCCESS}] Site '{domain}' added."
+        return f"[{WARNING}] Cancelled."
 
-    def add_parsing_page(self) -> tuple:
+    def add_parsing_page(self) -> str:
         if not self.connected:
             return f"[{ERROR}] Not connected to config file!"
         
@@ -106,21 +121,43 @@ class ConfigManager(FileManager, Validator):
 
         if url:
             if not self.validate_url(url):
-                return f"[{ERROR}] Invalid url!", None
+                return f"[{ERROR}] Invalid url!"
             
             domain = self.get_domain(url)
             if domain != self.site_name:
-                return f"[{ERROR}] Site page url not from this site!", None
+                return f"[{ERROR}] Site page url not from this site!"
 
             response_data = self.get_response_data(url)
-            page_title = self.get_page_title(response_data)
+            page_title = self.get_page_title(bs(response_data.text, 'html.parser'))
             paginate_class = self.get_paginate_class(response_data=response_data.text)
+
+            # ------------ Class Block ------------------
+            response_data = bs(response_data.text, 'html.parser')
+            divs = response_data.find_all('div', class_=True)
+            classes = []
+
+            for div in divs:
+                classes.append(" ".join(div.attrs['class']))
+            
+            classes_set = list(set(classes))
+            classes_dict = dict({class_: classes.count(class_) for class_ in classes_set})
+
+            supposed_holder_blocks_classes_list = []
+
+            for class_ in classes_dict:
+                if classes_dict[class_] == 1:
+                    supposed_holder_blocks_classes_list.append(class_)
+
+
+            info_block_class = self.find_info_block_class(response_data, classes_dict, supposed_holder_blocks_classes_list, 10)
+            # ------------------------------
+
 
             if self.validate_unique_site(page_title, self.site_config['PARSING_PAGES'].keys()):
                 answer = self.styler.console_input_styler("Site page already exist in site config! Add anyway? [y/n]: ")
                 if answer != 'y':
-                    response_data.clear()
-                    return f"[{WARNING}] Cancelled.", None
+                    del response_data
+                    return f"[{WARNING}] Cancelled."
                 
                 count = 0
 
@@ -134,12 +171,31 @@ class ConfigManager(FileManager, Validator):
             self.site_config['PARSING_PAGES'][page_title] = self.page_template
             self.site_config['PARSING_PAGES'][page_title]['PAGE_URL'] = url
             self.site_config['PARSING_PAGES'][page_title]['PAGINATOR_CLASS_NAME'] = paginate_class
+            self.site_config['PARSING_PAGES'][page_title]['MAIN_PARSE_INFO_BLOCK'] = info_block_class
             self.config[domain] = self.site_config
             self.save_config(self.config)
             del response_data
-            return f"[{SUCCESS}] Site page added.", page_title
-        return f"[{WARNING}] Cancelled.", None
+            return f"[{SUCCESS}] Site page '{page_title}' added."
+        return f"[{WARNING}] Cancelled."
     
+    def delete_parsing_site(self):
+        config_dict = {str(key[0] + 1): key[1] for key in enumerate(self.config.keys())}
+
+        for site in config_dict.keys():
+            print(f"\t{site} - {config_dict[site]}")
+        answer = input("Print a number of site name to delete config: ").strip()
+        if answer and answer in config_dict.keys():
+            confirmation = input(f"Are you sure to want delete '{config_dict[answer]}' config?[Y/(any button)]: ").strip()
+            if confirmation and confirmation == 'Y':
+                del self.config[config_dict[answer]]
+                self.save_config(self.config)
+                if config_dict[answer] == self.site_name:
+                    self.config = self.load_config()
+                    self.site_config = None
+                    self.site_name = None
+                return f"[{SUCCESS}] Site config for '{config_dict[answer]}' has been deleted."
+        return f"[{WARNING}] Cancelled."
+
     def connect(self, config, site_config, site_name):
         if config:
             self.config = config
@@ -164,6 +220,7 @@ class ConfigManager(FileManager, Validator):
                 if site_config[0]:
                     self.connect(config, site_config=site_config[0], site_name=site_config[1])
                     return f"[{SUCCESS}] Module set."
+                self.config = config
                 return f"[{WARNING}] Module set, but previews site config not found!"
 
             if selected_module == "manager":
@@ -204,9 +261,7 @@ if __name__ == '__main__':
     response_data = manager.get_response_data(url)
     response_data = bs(response_data.text, 'html.parser')
 
-    div = response_data.find('div')
-
-    # print(div.find_next('div').text)
+    # div = response_data.find('div')
 
     divs = response_data.find_all('div', class_=True)
     classes = []
@@ -215,26 +270,86 @@ if __name__ == '__main__':
         classes.append(" ".join(div.attrs['class']))
     
     classes_set = list(set(classes))
-
     classes_dict = dict({class_: classes.count(class_) for class_ in classes_set})
 
-    classes_dict = {k: v for k, v in sorted(classes_dict.items(), key=lambda item: item[1])}
+    # classes_dict = {k: v for k, v in sorted(classes_dict.items(), key=lambda item: item[1])}
     # print(classes_dict)
     # for i in classes_dict.items():
     #     print(i)
     
+    # def find_next_class(classes_dict, supposed_main_block_classes):
+    #     for class_ in supposed_main_block_classes:
+    #         blocks_class = response_data.find('div', class_=class_)
+    #         main_class = blocks_class.find_next('div')
+    #         if classes_dict[" ".join(next_div_in_block.attrs['class'])] > classes_dict[class_]:
+    #             input_block = next_div_in_block.find_next('div')
+    #             if classes_dict[" ".join(main_class.attrs['class'])] == classes_dict[" ".join(main_class.attrs['class'])]:
+    #                 print("Main: ", class_, "===", "Docher:", " ".join(next_div_in_block.attrs['class']))
+    
+    supposed_holder_blocks_classes_list = []
 
     for class_ in classes_dict:
         if classes_dict[class_] == 1:
-            try:
-                div = response_data.find('div', class_=class_)
-                
-                next_div = div.find_next('div')
-                if classes_dict[" ".join(next_div.attrs['class'])] >= 10:
-                    print(class_, "===", " ".join(next_div.attrs['class']))
+            supposed_holder_blocks_classes_list.append(class_)
 
-            except KeyError:
-                pass
+            # try:
+            #     supposed_main_class = response_data.find('div', class_=class_)
+                
+            #     next_div_in_block = supposed_main_class.find_next('div')
+
+            #     if classes_dict[" ".join(next_div_in_block.attrs['class'])] > classes_dict[class_]:
+            #         input_block = next_div_in_block.find_next('div')
+            #         if classes_dict[" ".join(input_block.attrs['class'])] == classes_dict[" ".join(next_div_in_block.attrs['class'])]:
+            #             input_input_block = input_block.find_next('div')
+            #             if classes_dict[" ".join(input_input_block.attrs['class'])] == classes_dict[" ".join(input_block.attrs['class'])]:
+            #                 print("Main: ", class_, "===", "Docher:", " ".join(next_div_in_block.attrs['class']))
+
+            # except KeyError:
+            #     pass
+
+    # supposed_main_block_classes = []
+
+    # if len(supposed_holder_blocks_classes_list) > 1:
+    #     for class_ in supposed_holder_blocks_classes_list:
+    #         try:
+    #             blocks_class = response_data.find('div', class_=class_)
+    #             main_class = blocks_class.find_next('div')
+    #             if classes_dict[" ".join(main_class.attrs['class'])] > classes_dict[class_]:
+    #                 supposed_main_block_classes.append(main_class) 
+    #         except KeyError:
+    #             pass
+            
+    # divs = response_data.find_all('div', class_=True)
+    # classes = []
+
+    # for div in divs:
+    #     classes.append(" ".join(div.attrs['class']))
+    
+    # classes_set = list(set(classes))
+    # classes_dict = dict({class_: classes.count(class_) for class_ in classes_set})
+
+    # supposed_holder_blocks_classes_list = []
+
+    # for class_ in classes_dict:
+    #     if classes_dict[class_] == 1:
+    #         supposed_holder_blocks_classes_list.append(class_)
+
+    def find_info_block_class(classes_dict, previews_classes, blocks_on_page):
+        if len(previews_classes) > 1:
+            supposed_main_block_classes = []
+            for class_ in previews_classes:
+                try:
+                    blocks_class = response_data.find('div', class_=class_)
+                    main_class = blocks_class.find_next('div')
+                    if classes_dict[" ".join(main_class.attrs['class'])] == blocks_on_page:
+                        supposed_main_block_classes.append(" ".join(main_class.attrs['class']))
+                except KeyError:
+                    continue
+            return find_info_block_class(classes_dict, supposed_main_block_classes, blocks_on_page)
+        return previews_classes[0]
+    
+    print(find_info_block_class(classes_dict, supposed_holder_blocks_classes_list, 10))
+    # return supposed_classes_list[0]
             
         
         # print(div.attrs['class'])

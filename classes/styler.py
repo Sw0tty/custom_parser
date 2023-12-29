@@ -6,7 +6,7 @@ from colorama import Fore, Style
 from app_config.app_notices import ERROR
 from app_config.settings import DEFAULT_MODULE, DEFAULT_SITE_CONFIG
 from classes.exceptions import TooManyArguments, UnexpectedSideParameter
-from modules.parser_manager.template import exclude_words, status_1, status_2, status_3, correct_words
+from modules.parser_manager.template import exclude_words, status_1, status_2, status_3, correct_words, accepted_words, status_1_mod, status_2_mod, status_3_mod
 
 
 class Styler:
@@ -18,6 +18,25 @@ class Styler:
             'remove_extra': self.remove_extra_chars,
         }
 
+    def accept_data_styler(data):
+        for word in accepted_words:
+            if word in data:
+                return True
+        return False
+
+    @staticmethod
+    def set_status_code(data):
+        for status in status_1_mod:
+            if status in data:
+                return 1
+        for status in status_2_mod:
+            if status in data:
+                return 2
+        for status in status_3_mod:
+            if status in data:
+                return 3
+        return "Undefined"
+    
     @staticmethod
     def is_code(string):
         if string in status_1:
@@ -27,7 +46,7 @@ class Styler:
         if string in status_3:
             return 3
 
-    def set_status_code(self, text):
+    def set_status_code_old(self, text):
         for string in correct_words:
             if string in text:
                 return self.is_code(string)

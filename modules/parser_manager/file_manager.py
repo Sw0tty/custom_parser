@@ -67,7 +67,7 @@ class FileManager(Template):
                 # return config
         return None
     
-    def load_site_config(self, config):
+    def load_site_config(self, config) -> tuple:
         return config.get(self.default_site_name, None), self.default_site_name
 
     # def overwrite_template(self, is_valid):
