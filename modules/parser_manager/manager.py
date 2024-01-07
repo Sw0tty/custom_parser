@@ -48,6 +48,12 @@ class ConfigManager(FileManager, Validator):
         """
         return 's' in url[:url.find(':')]
     
+    def get_site_name(self) -> str:
+        """
+        Return current site_name config.
+        """
+        return self.site_name
+    
     def get_current_module(self) -> str:
         if self.current_module:
             return self.current_module
@@ -59,25 +65,22 @@ class ConfigManager(FileManager, Validator):
         return DEFAULT_SITE_CONFIG
     
     @staticmethod
-    def get_response_data(url):
-        response = requests.get(url, headers=PARSER_HEADERS)
-        return response
+    def __get_response_data(url):
+        return requests.get(url, headers=PARSER_HEADERS)
         return bs(response.text, 'html.parser')
     
-    def get_page_title(self, response_data) -> str:
-        # response = requests.get(url, headers=PARSER_HEADERS)
-        # response_data = bs(response_data.text, 'html.parser')
+    @staticmethod
+    def __get_page_title(response_data) -> str:
         return response_data.find('title').text.strip()
     
     @staticmethod
-    def get_paginate_class(response_data: str):
+    def __get_paginate_class(response_data: str):
         if "pagin" in response_data:
             middle_index = response_data.index("pagin")
             start_index = middle_index - (response_data[middle_index::-1].index(chr(34)) - 1)
-            end_index = start_index + response_data[middle_index:].index(chr(34))
+            end_index = start_index + response_data[start_index:].index(chr(34))
             return response_data[start_index:end_index]
         return None
-    
     
     def find_info_block_class(self, response_data, classes_dict, previews_classes, blocks_on_page):
         if len(previews_classes) > 1:
@@ -119,66 +122,66 @@ class ConfigManager(FileManager, Validator):
         
         url = input("Input site page url: ").strip()
 
-        if url:
-            if not self.validate_url(url):
-                return f"[{ERROR}] Invalid url!"
+        if not url:
+            return f"[{WARNING}] Cancelled."
+        
+        if not self.validate_url(url):
+            return f"[{ERROR}] Invalid url!"
+        
+        domain = self.get_domain(url)
+
+        if domain != self.site_name:
+            return f"[{ERROR}] Site page url not from this site!"
+
+        response_data = self.__get_response_data(url)
+        page_title = self.__get_page_title(bs(response_data.text, 'html.parser'))
+        paginate_class = self.__get_paginate_class(response_data=response_data.text)
+
+        # ------------ Class Block ------------------
+        response_data = bs(response_data.text, 'html.parser')
+        
+        # divs = response_data.find_all('div', class_=True)
+        # classes = []
+        # for div in divs:
+        #     classes.append(" ".join(div.attrs['class']))
+
+        classes = set(" ".join(div.attrs['class']) for div in response_data.find_all('div', class_=True))
+        
+        # classes_set = list(set(classes))
+        classes_dict = dict({class_: classes.count(class_) for class_ in classes})
+
+        supposed_holder_blocks_classes_list = [class_ for class_ in classes_dict if classes_dict[class_] == 1]
+
+        # for class_ in classes_dict:
+        #     if classes_dict[class_] == 1:
+        #         supposed_holder_blocks_classes_list.append(class_)
+
+        info_block_class = self.find_info_block_class(response_data, classes_dict, supposed_holder_blocks_classes_list, 10)
+        # ------------------------------
+
+
+        if self.validate_unique_site(page_title, self.site_config['PARSING_PAGES'].keys()):
+            answer = self.styler.console_input_styler("Site page already exist in site config! Add anyway? [y/n]: ")
+            if answer != 'y':
+                return f"[{WARNING}] Cancelled."
             
-            domain = self.get_domain(url)
-            if domain != self.site_name:
-                return f"[{ERROR}] Site page url not from this site!"
+            count = 0
+            for key in self.site_config['PARSING_PAGES']:
+                if page_title in key:
+                    count += 1
 
-            response_data = self.get_response_data(url)
-            page_title = self.get_page_title(bs(response_data.text, 'html.parser'))
-            paginate_class = self.get_paginate_class(response_data=response_data.text)
-
-            # ------------ Class Block ------------------
-            response_data = bs(response_data.text, 'html.parser')
-            divs = response_data.find_all('div', class_=True)
-            classes = []
-
-            for div in divs:
-                classes.append(" ".join(div.attrs['class']))
+            page_title = f"{page_title}_{count}"
             
-            classes_set = list(set(classes))
-            classes_dict = dict({class_: classes.count(class_) for class_ in classes_set})
+        self.site_config['PARSING_PAGES'][page_title] = self.page_template
+        self.site_config['PARSING_PAGES'][page_title]['PAGE_URL'] = url
+        self.site_config['PARSING_PAGES'][page_title]['PAGINATOR_CLASS_NAME'] = paginate_class
+        self.site_config['PARSING_PAGES'][page_title]['MAIN_PARSE_INFO_BLOCK'] = info_block_class
+        self.config[domain] = self.site_config
+        self.save_config(self.config)
 
-            supposed_holder_blocks_classes_list = []
-
-            for class_ in classes_dict:
-                if classes_dict[class_] == 1:
-                    supposed_holder_blocks_classes_list.append(class_)
-
-
-            info_block_class = self.find_info_block_class(response_data, classes_dict, supposed_holder_blocks_classes_list, 10)
-            # ------------------------------
-
-
-            if self.validate_unique_site(page_title, self.site_config['PARSING_PAGES'].keys()):
-                answer = self.styler.console_input_styler("Site page already exist in site config! Add anyway? [y/n]: ")
-                if answer != 'y':
-                    del response_data
-                    return f"[{WARNING}] Cancelled."
-                
-                count = 0
-
-                for key in self.site_config['PARSING_PAGES']:
-                    if page_title in key:
-                        count += 1
-
-                page_title = f"{page_title}_{count}"
-                # return f"[{ERROR}] Site page already exist in site config!", None
-
-            self.site_config['PARSING_PAGES'][page_title] = self.page_template
-            self.site_config['PARSING_PAGES'][page_title]['PAGE_URL'] = url
-            self.site_config['PARSING_PAGES'][page_title]['PAGINATOR_CLASS_NAME'] = paginate_class
-            self.site_config['PARSING_PAGES'][page_title]['MAIN_PARSE_INFO_BLOCK'] = info_block_class
-            self.config[domain] = self.site_config
-            self.save_config(self.config)
-            del response_data
-            return f"[{SUCCESS}] Site page '{page_title}' added."
-        return f"[{WARNING}] Cancelled."
-    
-    def delete_parsing_site(self):
+        return f"[{SUCCESS}] Site page '{page_title}' added."
+        
+    def delete_parsing_site(self) -> str:
         config_dict = {str(key[0] + 1): key[1] for key in enumerate(self.config.keys())}
 
         for site in config_dict.keys():
@@ -196,7 +199,7 @@ class ConfigManager(FileManager, Validator):
                 return f"[{SUCCESS}] Site config for '{config_dict[answer]}' has been deleted."
         return f"[{WARNING}] Cancelled."
 
-    def connect(self, config, site_config, site_name):
+    def connect(self, config, site_config, site_name) -> str:
         if config:
             self.config = config
             if site_config:
@@ -204,7 +207,7 @@ class ConfigManager(FileManager, Validator):
                 self.site_name = site_name
                 self.connected = True
             return f"[{SUCCESS}] Config set."
-        return f"[{ERROR}] "
+        return f"[{ERROR}] Config file not found!"
 
     def set_module(self):
         print("All modules:")
@@ -249,11 +252,7 @@ class ConfigManager(FileManager, Validator):
             self.overwrite_env(config_dict[answer])
             return self.connect(self.config, self.config[config_dict[answer]], config_dict[answer])
         return f"[{WARNING}] Cancelled."
-    
-    # def check_connection(self):
-    #     if self.connected:
-    #         return f"[{INFO}] Now loaded config for '{self.site_name}'."
-    #     return f"[{ERROR}] No loaded any site config."
+
 
 if __name__ == '__main__':
     manager = ConfigManager()

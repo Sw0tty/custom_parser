@@ -123,7 +123,7 @@ while True:
             case '4':  # reset config
                 # print(config_manager.check_connection())
                 print(config_manager.set_config())
-                SITE_CONFIG = config_manager.site_name
+                SITE_CONFIG = config_manager.get_site_name()
             case '5':
                 print(config_manager.delete_parsing_site())
                 # print(config_manager.get_page_title('https://docs-python.ru/'))
